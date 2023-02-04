@@ -1,13 +1,12 @@
 import cors from "cors";
 import express from "express";
-import helmet from "helmet";
 
 const PORT = 8080;
 
 const app = express();
 
+app.disable("x-powered-by");
 app.use(express.json());
-app.use(helmet());
 app.use(cors());
 
 app.get("/", (_req, res) => {

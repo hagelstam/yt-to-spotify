@@ -7,6 +7,8 @@
     },
     "lint": {},
     "format": {},
-    "clean": {}
+    "clean": {
+      "cache": false
+    }
   }
 }
