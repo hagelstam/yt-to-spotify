@@ -1,0 +1,20 @@
+{
+  "env": {
+    "es6": true,
+    "browser": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["@typescript-eslint", "react", "jsx-a11y", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:jsx-a11y/recommended",
+    "plugin:react/recommended"
+  ],
+  "rules": {
+    "prettier/prettier": "error"
+  }
+}
