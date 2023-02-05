@@ -7,6 +7,12 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "detect"
+    }
+  },
   "plugins": ["@typescript-eslint", "react", "jsx-a11y", "prettier"],
   "extends": [
     "eslint:recommended",
