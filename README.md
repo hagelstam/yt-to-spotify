@@ -10,7 +10,7 @@
 ## Get started
 
 ```bash
-git clone https://github.com/MaximilianHagelstam/cryptochimp
+git clone https://github.com/MaximilianHagelstam/inkspace
 cd inkspace
 
 pnpm install
