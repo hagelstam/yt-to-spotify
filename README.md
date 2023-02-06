@@ -1,17 +1,17 @@
-# Inkspace
+# Add song metadata
 
 ## Structure
 
-| Codebase                                                                                        |  Description   |
-| :---------------------------------------------------------------------------------------------- | :------------: |
-| [client](https://github.com/MaximilianHagelstam/inkspace/tree/main/apps/client) (`apps/client`) |   React SPA    |
-| [server](https://github.com/MaximilianHagelstam/inkspace/tree/main/apps/server) (`apps/server`) | Express.js API |
+| Codebase                                                                                                 |  Description   |
+| :------------------------------------------------------------------------------------------------------- | :------------: |
+| [client](https://github.com/MaximilianHagelstam/add-song-metadata/tree/main/apps/client) (`apps/client`) |   React SPA    |
+| [server](https://github.com/MaximilianHagelstam/add-song-metadata/tree/main/apps/server) (`apps/server`) | Express.js API |
 
 ## Get started
 
 ```bash
-git clone https://github.com/MaximilianHagelstam/inkspace
-cd inkspace
+git clone https://github.com/MaximilianHagelstam/add-song-metadata
+cd add-song-metadata
 
 pnpm install
 pnpm dev
@@ -23,13 +23,11 @@ pnpm dev
 
 - [React.js](https://reactjs.org/)
 - [Vite](https://vitejs.dev/)
-- [React Query](https://tanstack.com/query/)
-- [Material UI](https://mui.com/)
 
 ### Backend
 
 - [Express.js](https://expressjs.com/)
-- [MongoDB](https://www.mongodb.com/)
+- [FFmpeg](https://ffmpeg.org/)
 
 ### Tooling
 
