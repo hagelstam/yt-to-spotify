@@ -3,25 +3,30 @@ import { useState } from "react";
 const App = () => {
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
-  const [image, setImage] = useState<File | null | undefined>(null);
+  const [cover, setCover] = useState<File | null | undefined>(null);
   const [song, setSong] = useState<File | null | undefined>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [downloadLink, setDownloadLink] = useState("");
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     setIsLoading(true);
+
+    if (!song || !cover || title.trim().length === 0 || artist.trim().length === 0) return;
+
+    const formData = new FormData();
+
+    // formData.append("song", song);
+    formData.append("cover", cover);
+    formData.append("title", title);
+    formData.append("artist", artist);
 
     const uploadRes = await fetch("http://localhost:8080/api/upload", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
-      body: JSON.stringify({
-        artist,
-        title,
-      }),
+      body: formData,
     });
 
     const { file_path } = (await uploadRes.json()) as { file_path: string };
@@ -42,6 +47,7 @@ const App = () => {
             type="file"
             accept="audio/*"
             onChange={(e) => setSong(e.target.files?.item(0))}
+            required
           />
         </div>
         <div>
@@ -51,7 +57,8 @@ const App = () => {
             name="cover"
             type="file"
             accept="image/*"
-            onChange={(e) => setImage(e.target.files?.item(0))}
+            onChange={(e) => setCover(e.target.files?.item(0))}
+            required
           />
         </div>
         <div>
@@ -80,7 +87,7 @@ const App = () => {
           {isLoading ? "Loading..." : "Submit"}
         </button>
       </form>
-      {image && <img alt="Album cover" height={200} src={URL.createObjectURL(image)} />}
+      {cover && <img alt="Album cover" height={200} src={URL.createObjectURL(cover)} />}
       {song && (
         <audio controls>
           <source src={URL.createObjectURL(song)} />

@@ -7,12 +7,15 @@ import { FILES_PATH } from "../utils/constants";
 export const upload = (req: Request, res: Response) => {
   const id = req.id;
   const { title, artist } = req.body as { title: string; artist: string };
+  const cover = req.file;
+
+  if (!title || !artist || !cover) return res.status(400).json({ message: "Missing fields" });
 
   const child = spawn(ffmpegPath, [
     "-i",
     "./song.mp3",
     "-i",
-    "cover.jpg",
+    `${FILES_PATH}/${id}/${cover.filename}`,
     "-map",
     "0:0",
     "-map",
@@ -32,7 +35,7 @@ export const upload = (req: Request, res: Response) => {
     if (code !== 0) {
       return res.status(500).json({ message: "Something went wrong" });
     }
-    return res.status(200).json({ file_path: `/api/download/${id}?name=${title}` });
+    return res.status(200).json({ file_path: `/api/download/${id}` });
   });
 };
 
