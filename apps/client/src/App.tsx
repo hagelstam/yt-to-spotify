@@ -1,4 +1,3 @@
-import { saveAs } from "file-saver";
 import { useState } from "react";
 
 const App = () => {
@@ -7,34 +6,34 @@ const App = () => {
   const [image, setImage] = useState<File | null | undefined>(null);
   const [song, setSong] = useState<File | null | undefined>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [downloadLink, setDownloadLink] = useState("");
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setIsLoading(true);
+
+    const uploadRes = await fetch("http://localhost:8080/api/upload", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        artist,
+        title,
+      }),
+    });
+
+    const { file_path } = (await uploadRes.json()) as { file_path: string };
+    setDownloadLink(`http://localhost:8080${file_path}`);
+
+    setIsLoading(false);
+  };
 
   return (
     <>
       <h1>Add Song Metadata</h1>
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-
-          setIsLoading(true);
-
-          const res = await fetch("http://localhost:8080/api/add-metadata", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              artist,
-              title,
-            }),
-          });
-
-          const { file_path } = (await res.json()) as { file_path: string };
-
-          saveAs(file_path, "result.mp3");
-
-          setIsLoading(false);
-        }}
-      >
+      <form onSubmit={onSubmit}>
         <div>
           <label htmlFor="song">Song</label>
           <input
@@ -43,7 +42,6 @@ const App = () => {
             type="file"
             accept="audio/*"
             onChange={(e) => setSong(e.target.files?.item(0))}
-            required
           />
         </div>
         <div>
@@ -54,7 +52,6 @@ const App = () => {
             type="file"
             accept="image/*"
             onChange={(e) => setImage(e.target.files?.item(0))}
-            required
           />
         </div>
         <div>
@@ -89,6 +86,12 @@ const App = () => {
           <source src={URL.createObjectURL(song)} />
           <track kind="captions" />
         </audio>
+      )}
+
+      {downloadLink.length > 0 && (
+        <a href={downloadLink} target="_blank" rel="noreferrer">
+          Download
+        </a>
       )}
     </>
   );
