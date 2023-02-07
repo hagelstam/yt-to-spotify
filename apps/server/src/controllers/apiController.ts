@@ -2,22 +2,11 @@ import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
 import { spawn } from "child_process";
 import { Request, Response } from "express";
 import fs from "fs";
-import { v4 as uuid } from "uuid";
 import { FILES_PATH } from "../utils/constants";
 
 export const upload = (req: Request, res: Response) => {
-  const title = req.body.title as string;
-  const artist = req.body.artist as string;
-
-  if (!title || !artist) return res.status(400).json({ message: "Fill in required fields" });
-
-  const id = uuid();
-
-  if (!fs.existsSync(FILES_PATH)) {
-    fs.mkdirSync(FILES_PATH);
-  }
-
-  fs.mkdirSync(`${FILES_PATH}/${id}`);
+  const id = req.id;
+  const { title, artist } = req.body as { title: string; artist: string };
 
   const child = spawn(ffmpegPath, [
     "-i",
@@ -49,11 +38,10 @@ export const upload = (req: Request, res: Response) => {
 
 export const download = (req: Request, res: Response) => {
   const { id } = req.params;
-  const name = req.query.name as string;
 
-  if (!fs.existsSync(`${FILES_PATH}/${id}`)) return res.status(400).json({ message: "Fake id" });
+  if (!fs.existsSync(`${FILES_PATH}/${id}`)) return res.status(400).json({ message: "Bad id" });
 
-  return res.download(`${FILES_PATH}/${id}/out.mp3`, `${name}.mp3`, () => {
+  return res.download(`${FILES_PATH}/${id}/out.mp3`, () => {
     fs.rmSync(`${FILES_PATH}/${id}`, {
       recursive: true,
     });
