@@ -50,32 +50,6 @@ export const getThumbnailFromVideo = (path: string): Promise<void> => {
   });
 };
 
-export const resizeInputCover = (path: string): Promise<void> => {
-  const process = spawn(ffmpegPath, [
-    "-y",
-    "-i",
-    `${path}/image.png`,
-    "-aspect",
-    "1:1",
-    '"scale=640x360,pad=640:480:0:60:black"',
-    `${path}/cover.png`,
-  ]);
-
-  return new Promise((resolve, reject) => {
-    process.on("spawn", () => {
-      console.log("Resizing cover...");
-    });
-    process.on("error", () => {
-      console.error("Error resizing cover");
-      reject();
-    });
-    process.on("exit", () => {
-      console.info("Cover resized");
-      resolve();
-    });
-  });
-};
-
 export const convertVideoToMp3 = (path: string): Promise<void> => {
   const process = spawn(ffmpegPath, [
     "-i",
