@@ -9,6 +9,8 @@ import {
   getThumbnailFromVideo,
 } from "../utils/convertHelpers";
 
+const MAX_VIDEO_LENGTH_SECONDS = 300;
+
 export const convert = async (req: Request, res: Response) => {
   const { id } = req;
   const DUMP_PATH = `${FILES_PATH}/${id}`;
@@ -25,6 +27,10 @@ export const convert = async (req: Request, res: Response) => {
 
     if (!ytdl.validateURL(url))
       return res.status(400).json({ error: "invalid url" });
+
+    const videoInfo = await ytdl.getInfo(url);
+    if (Number(videoInfo.videoDetails.lengthSeconds) > MAX_VIDEO_LENGTH_SECONDS)
+      return res.status(400).json({ error: "video too long" });
 
     await downloadVideo(DUMP_PATH, url);
     await convertVideoToMp3(DUMP_PATH);

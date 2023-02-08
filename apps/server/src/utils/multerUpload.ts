@@ -1,5 +1,7 @@
 import multer from "multer";
-import { FILES_PATH, MB_IN_BYTES } from "./constants";
+import { FILES_PATH } from "./constants";
+
+const MB_IN_BYTES = 1_000_000;
 
 export const multerUpload = multer({
   limits: { fileSize: 5 * MB_IN_BYTES, files: 1 },
