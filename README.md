@@ -1,18 +1,15 @@
-# Add song metadata
+# YouTube to Spotify
 
 ## Structure
 
-| Codebase                                                                                                 |  Description   |
-| :------------------------------------------------------------------------------------------------------- | :------------: |
-| [client](https://github.com/MaximilianHagelstam/add-song-metadata/tree/main/apps/client) (`apps/client`) |   React SPA    |
-| [server](https://github.com/MaximilianHagelstam/add-song-metadata/tree/main/apps/server) (`apps/server`) | Express.js API |
+| Codebase                                                                                             |  Description   |
+| :--------------------------------------------------------------------------------------------------- | :------------: |
+| [client](https://github.com/MaximilianHagelstam/yt-to-spotify/tree/main/apps/client) (`apps/client`) |   React SPA    |
+| [server](https://github.com/MaximilianHagelstam/yt-to-spotify/tree/main/apps/server) (`apps/server`) | Express.js API |
 
 ## Get started
 
 ```bash
-git clone https://github.com/MaximilianHagelstam/add-song-metadata
-cd add-song-metadata
-
 pnpm install
 pnpm dev
 ```
@@ -21,8 +18,7 @@ pnpm dev
 
 ### Frontend
 
-- [React.js](https://reactjs.org/)
-- [Vite](https://vitejs.dev/)
+- [React.js](https://reactjs.org/) with [Vite](https://vitejs.dev/)
 
 ### Backend
 

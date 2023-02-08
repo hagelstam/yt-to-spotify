@@ -1,6 +1,6 @@
 import app from "./app";
-import { PORT } from "./utils/constants";
+import { PORT, SERVER_URL } from "./utils/constants";
 
 app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} on port ${PORT}`);
+  console.log(`Server running in ${process.env.NODE_ENV} on ${SERVER_URL}`);
 });
