@@ -4,6 +4,7 @@ import { object, string } from "yup";
 const convertSchema = object({
   title: string().min(1).max(50).required(),
   artist: string().min(1).max(50).required(),
+  url: string().url().required(),
 });
 
 export const validateConvert = async (
