@@ -1,12 +1,16 @@
-import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
-import { spawn } from "child_process";
 import { Request, Response } from "express";
 import fs from "fs";
 import { v4 as uuid } from "uuid";
 import ytdl from "ytdl-core";
 import { FILES_PATH, SERVER_URL } from "../utils/constants";
+import {
+  addMetadata,
+  convertVideoToMp3,
+  downloadVideo,
+  getCoverFromVideo,
+} from "../utils/convertFunctions";
 
-export const convert = (req: Request, res: Response) => {
+export const convert = async (req: Request, res: Response) => {
   const id = uuid();
   const DUMP_PATH = `${FILES_PATH}/${id}`;
 
@@ -19,59 +23,25 @@ export const convert = (req: Request, res: Response) => {
 
     fs.mkdirSync(DUMP_PATH);
 
-    if (!ytdl.validateURL(url)) throw new Error("invalid url");
+    if (!ytdl.validateURL(url))
+      return res.status(400).json({ error: "invalid url" });
 
-    return ytdl(url, {
-      filter: "audioonly",
-      quality: "highestaudio",
-    })
-      .pipe(fs.createWriteStream(`${DUMP_PATH}/video.mp4`))
-      .on("error", () => {
-        throw new Error("error downloading video");
-      })
-      .on("finish", () => {
-        spawn(ffmpegPath, [
-          "-i",
-          `${DUMP_PATH}/video.mp4`,
-          `${DUMP_PATH}/in.mp3`,
-        ]).on("exit", (code) => {
-          if (code !== 0) throw new Error("error converting to mp3");
+    await downloadVideo(DUMP_PATH, url);
+    await getCoverFromVideo(DUMP_PATH);
+    await convertVideoToMp3(DUMP_PATH);
+    await addMetadata(DUMP_PATH, title, artist);
 
-          return spawn(ffmpegPath, [
-            "-i",
-            `${DUMP_PATH}/in.mp3`,
-            "-i",
-            `./cover.jpg`,
-            "-map",
-            "0:0",
-            "-map",
-            "1:0",
-            "-c",
-            "copy",
-            "-id3v2_version",
-            "3",
-            "-metadata",
-            `title=${title}`,
-            "-metadata",
-            `artist=${artist}`,
-            `${DUMP_PATH}/out.mp3`,
-          ]).on("exit", (code) => {
-            if (code !== 0) throw new Error("error adding metadata");
-
-            return res
-              .status(200)
-              .json({ file_path: `${SERVER_URL}/api/download/${id}` });
-          });
-        });
+    if (!fs.existsSync(`${DUMP_PATH}/out.mp3`)) {
+      fs.rmSync(DUMP_PATH, {
+        recursive: true,
       });
-  } catch (err) {
-    fs.rmSync(DUMP_PATH, {
-      recursive: true,
-    });
-
-    if (err instanceof Error) {
-      return res.status(400).json({ error: err.message });
+      return res.status(500).json({ error: "error processing video" });
     }
+
+    return res
+      .status(200)
+      .json({ file_path: `${SERVER_URL}/api/download/${id}` });
+  } catch (err) {
     return res.status(500).json({ error: "something went wrong" });
   }
 };

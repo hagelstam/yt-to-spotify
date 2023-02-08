@@ -3,5 +3,3 @@ dist
 .turbo
 .env
 apps/server/uploads
-*.mp3
-*.jpg
