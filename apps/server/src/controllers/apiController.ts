@@ -8,7 +8,7 @@ import {
   convertVideoToMp3,
   downloadVideo,
   getCoverFromVideo,
-} from "../utils/convertFunctions";
+} from "../utils/convertHelpers";
 
 export const convert = async (req: Request, res: Response) => {
   const id = uuid();

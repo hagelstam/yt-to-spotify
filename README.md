@@ -18,7 +18,8 @@ pnpm dev
 
 ### Frontend
 
-- [React.js](https://reactjs.org/) with [Vite](https://vitejs.dev/)
+- [React.js](https://reactjs.org/)
+- [Vite](https://vitejs.dev/)
 
 ### Backend
 
