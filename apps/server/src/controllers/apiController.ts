@@ -7,6 +7,9 @@ import ytdl from "ytdl-core";
 import { FILES_PATH, SERVER_URL } from "../utils/constants";
 
 export const convert = (req: Request, res: Response) => {
+  const id = uuid();
+  const DUMP_PATH = `${FILES_PATH}/${id}`;
+
   try {
     const { title, artist, url } = req.body as {
       title: string;
@@ -14,26 +17,25 @@ export const convert = (req: Request, res: Response) => {
       url: string;
     };
 
-    const id = uuid();
-    const DUMP_PATH = `${FILES_PATH}/${id}`;
     fs.mkdirSync(DUMP_PATH);
 
-    if (!ytdl.validateURL(url))
-      return res.status(400).json({ error: "invalid url" });
+    if (!ytdl.validateURL(url)) throw new Error("invalid url");
 
     return ytdl(url, {
       filter: "audioonly",
       quality: "highestaudio",
     })
       .pipe(fs.createWriteStream(`${DUMP_PATH}/video.mp4`))
+      .on("error", () => {
+        throw new Error("error downloading video");
+      })
       .on("finish", () => {
         spawn(ffmpegPath, [
           "-i",
           `${DUMP_PATH}/video.mp4`,
           `${DUMP_PATH}/in.mp3`,
         ]).on("exit", (code) => {
-          if (code !== 0)
-            return res.status(500).json({ error: "error downloading video" });
+          if (code !== 0) throw new Error("error converting to mp3");
 
           return spawn(ffmpegPath, [
             "-i",
@@ -54,8 +56,7 @@ export const convert = (req: Request, res: Response) => {
             `artist=${artist}`,
             `${DUMP_PATH}/out.mp3`,
           ]).on("exit", (code) => {
-            if (code !== 0)
-              return res.status(500).json({ error: "error adding metadata" });
+            if (code !== 0) throw new Error("error adding metadata");
 
             return res
               .status(200)
@@ -64,6 +65,13 @@ export const convert = (req: Request, res: Response) => {
         });
       });
   } catch (err) {
+    fs.rmSync(DUMP_PATH, {
+      recursive: true,
+    });
+
+    if (err instanceof Error) {
+      return res.status(400).json({ error: err.message });
+    }
     return res.status(500).json({ error: "something went wrong" });
   }
 };
