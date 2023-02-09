@@ -4,7 +4,6 @@ import { FILES_PATH } from "./constants";
 const MB_IN_BYTES = 1_000_000;
 
 export const multerUpload = multer({
-  limits: { fileSize: 5 * MB_IN_BYTES, files: 1 },
   storage: multer.diskStorage({
     destination: (req, _file, cb) => {
       cb(null, `${FILES_PATH}/${req.id}`);
@@ -15,13 +14,14 @@ export const multerUpload = multer({
   }),
   fileFilter: (_req, file, cb) => {
     if (
-      file.mimetype === "image/png" ||
-      file.mimetype === "image/jpeg" ||
-      file.mimetype === "image/jpg"
-    ) {
-      cb(null, true);
-    } else {
-      cb(null, false);
-    }
+      file.mimetype !== "image/png" &&
+      file.mimetype !== "image/jpeg" &&
+      file.mimetype !== "image/jpg"
+    )
+      return cb(null, false);
+
+    if (file.size > 5 * MB_IN_BYTES) return cb(null, false);
+
+    return cb(null, true);
   },
 });
