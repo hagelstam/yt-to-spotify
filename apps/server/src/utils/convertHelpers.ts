@@ -1,6 +1,7 @@
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
 import { spawn } from "child_process";
 import fs from "fs";
+import sharp from "sharp";
 import ytdl from "ytdl-core";
 
 export const downloadVideo = (path: string, url: string): Promise<void> => {
@@ -75,14 +76,13 @@ export const convertVideoToMp3 = (path: string): Promise<void> => {
 export const addMetadata = (
   path: string,
   title: string,
-  artist: string,
-  useThumbnail: boolean
+  artist: string
 ): Promise<void> => {
   const process = spawn(ffmpegPath, [
     "-i",
     `${path}/in.mp3`,
     "-i",
-    `${path}/${useThumbnail ? "thumbnail" : "cover"}.png`,
+    `${path}/final-image.png`,
     "-map",
     "0:0",
     "-map",
@@ -111,4 +111,15 @@ export const addMetadata = (
       resolve();
     });
   });
+};
+
+export const resizeCover = async (
+  path: string,
+  useThumbnailAsCover: boolean
+): Promise<void> => {
+  console.log("Resizing cover...");
+  await sharp(`${path}/${useThumbnailAsCover ? "thumbnail" : "cover"}.png`)
+    .resize(500, 500, { fit: "cover" })
+    .toFile(`${path}/final-image.png`);
+  console.log("Cover resized");
 };

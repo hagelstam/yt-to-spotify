@@ -7,6 +7,7 @@ import {
   convertVideoToMp3,
   downloadVideo,
   getThumbnailFromVideo,
+  resizeCover,
 } from "../utils/convertHelpers";
 
 const MAX_VIDEO_LENGTH_SECONDS = 300;
@@ -35,7 +36,8 @@ export const convert = async (req: Request, res: Response) => {
     await downloadVideo(DUMP_PATH, url);
     await convertVideoToMp3(DUMP_PATH);
     if (useThumbnailAsCover) await getThumbnailFromVideo(DUMP_PATH);
-    await addMetadata(DUMP_PATH, title, artist, useThumbnailAsCover);
+    await resizeCover(DUMP_PATH, useThumbnailAsCover);
+    await addMetadata(DUMP_PATH, title, artist);
 
     if (!fs.existsSync(`${DUMP_PATH}/out.mp3`)) {
       fs.rmSync(DUMP_PATH, {

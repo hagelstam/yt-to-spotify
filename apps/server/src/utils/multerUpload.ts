@@ -14,7 +14,6 @@ export const multerUpload = multer({
     },
   }),
   fileFilter: (_req, file, cb) => {
-    console.log(file.mimetype);
     if (
       file.mimetype === "image/png" ||
       file.mimetype === "image/jpeg" ||
