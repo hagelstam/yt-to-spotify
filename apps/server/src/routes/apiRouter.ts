@@ -1,6 +1,6 @@
 import express from "express";
 import { convert, download } from "../controllers/apiController";
-import { prepareConvert } from "../middleware/prepareConvert";
+import { setRequestId } from "../middleware/setReqestId";
 import { validateConvert } from "../middleware/validateConvert";
 import { multerUpload } from "../utils/multerUpload";
 
@@ -8,7 +8,7 @@ const apiRouter = express.Router();
 
 apiRouter.post(
   "/convert",
-  prepareConvert,
+  setRequestId,
   multerUpload.single("cover"),
   validateConvert,
   convert

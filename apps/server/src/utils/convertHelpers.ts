@@ -33,7 +33,7 @@ export const getThumbnailFromVideo = (path: string): Promise<void> => {
     "00:00:01.000",
     "-frames:v",
     "1",
-    `${path}/thumbnail.png`,
+    `${path}/cover.png`,
   ]);
 
   return new Promise((resolve, reject) => {
@@ -82,7 +82,7 @@ export const addMetadata = (
     "-i",
     `${path}/in.mp3`,
     "-i",
-    `${path}/final-image.png`,
+    `${path}/resized-cover.png`,
     "-map",
     "0:0",
     "-map",
@@ -113,13 +113,10 @@ export const addMetadata = (
   });
 };
 
-export const resizeCover = async (
-  path: string,
-  useThumbnailAsCover: boolean
-): Promise<void> => {
+export const resizeCover = async (path: string): Promise<void> => {
   console.log("Resizing cover...");
-  await sharp(`${path}/${useThumbnailAsCover ? "thumbnail" : "cover"}.png`)
+  await sharp(`${path}/cover.png`)
     .resize(500, 500, { fit: "cover" })
-    .toFile(`${path}/final-image.png`);
+    .toFile(`${path}/resized-cover.png`);
   console.log("Cover resized");
 };
