@@ -18,9 +18,9 @@ const App = () => {
       const res = await fetch("http://localhost:8080/api/convert", {
         method: "POST",
         body: JSON.stringify({
-          url,
-          title,
-          artist,
+          url: url.trim(),
+          title: title.trim(),
+          artist: artist.trim(),
         }),
         headers: {
           "Content-Type": "application/json",
