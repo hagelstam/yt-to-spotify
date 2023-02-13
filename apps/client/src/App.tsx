@@ -86,7 +86,12 @@ const App = () => {
         </button>
       </form>
       {downloadLink.length > 0 && (
-        <a href={downloadLink} target="_blank" rel="noreferrer">
+        <a
+          href={downloadLink}
+          onClick={() => setDownloadLink("")}
+          target="_blank"
+          rel="noreferrer"
+        >
           Download
         </a>
       )}
