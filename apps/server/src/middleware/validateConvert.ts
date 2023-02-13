@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import fs from "fs";
 import ytdl from "ytdl-core";
-import { FILES_PATH } from "../utils/constants";
 
 const MAX_VIDEO_LENGTH_MIN = 7;
 
@@ -10,8 +8,6 @@ export const validateConvert = async (
   res: Response,
   next: NextFunction
 ) => {
-  const DUMP_PATH = `${FILES_PATH}/${req.id}`;
-
   try {
     const { title, artist, url } = req.body as {
       title: string | undefined;
@@ -19,8 +15,21 @@ export const validateConvert = async (
       url: string | undefined;
     };
 
-    if (!title || !artist || !url || !req.file)
-      throw new Error("Missing required fields");
+    if (!title || !artist || !url) throw new Error("Missing required fields");
+
+    if (
+      typeof title !== "string" ||
+      typeof artist !== "string" ||
+      typeof url !== "string"
+    )
+      throw new Error("Invalid fields");
+
+    if (
+      title.trim().length === 0 ||
+      artist.trim().length === 0 ||
+      url.trim().length === 0
+    )
+      throw new Error("Invalid fields");
 
     if (!ytdl.validateURL(url)) throw new Error("Invalid URL");
 
@@ -33,10 +42,6 @@ export const validateConvert = async (
 
     return next();
   } catch (err) {
-    fs.rmSync(DUMP_PATH, {
-      recursive: true,
-    });
-
     return res
       .status(400)
       .json({ error: err instanceof Error ? err.message : "Bad request" });

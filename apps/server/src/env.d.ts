@@ -6,9 +6,3 @@ declare namespace NodeJS {
     CLIENT_URL: string;
   }
 }
-
-declare namespace Express {
-  export interface Request {
-    id: string;
-  }
-}

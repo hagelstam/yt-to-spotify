@@ -4,11 +4,14 @@ import fs from "fs";
 import sharp from "sharp";
 import ytdl from "ytdl-core";
 
-export const downloadVideo = (path: string, url: string): Promise<void> => {
-  const process = ytdl(url, {
+export const downloadVideo = (
+  fileOut: string,
+  videoUrl: string
+): Promise<void> => {
+  const process = ytdl(videoUrl, {
     filter: "audioonly",
     quality: "highestaudio",
-  }).pipe(fs.createWriteStream(`${path}/in.m4a`));
+  }).pipe(fs.createWriteStream(fileOut));
 
   return new Promise((resolve) => {
     process.on("open", () => {
@@ -21,48 +24,63 @@ export const downloadVideo = (path: string, url: string): Promise<void> => {
   });
 };
 
-export const resizeCover = async (path: string): Promise<void> => {
-  console.log("Resizing cover...");
-  await sharp(`${path}/cover.png`)
-    .resize(500, 500, { fit: "cover" })
-    .toFile(`${path}/resized-cover.png`);
-  console.log("Cover resized");
+export const downloadCover = async (
+  tempFile: string,
+  fileOut: string,
+  videoId: string,
+  size: number
+): Promise<void> => {
+  console.log("Downloading cover...");
+
+  const res = await fetch(
+    `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+  );
+  const blob = await res.blob();
+  const arrayBuffer = await blob.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  fs.writeFileSync(tempFile, buffer);
+
+  await sharp(tempFile)
+    .extract({ height: size, width: size, left: size * 0.75, top: size * 0.1 })
+    .toFile(fileOut);
+
+  console.log("Cover downloaded");
+};
+
+export const convertToMp3 = (
+  fileIn: string,
+  fileOut: string
+): Promise<void> => {
+  const process = spawn(ffmpegPath, ["-i", fileIn, fileOut]);
+
+  return new Promise((resolve) => {
+    process.on("spawn", () => {
+      console.log("Converting to mp3...");
+    });
+    process.on("exit", () => {
+      console.info("Converted to mp3");
+      resolve();
+    });
+  });
 };
 
 export const addMetadata = (
-  path: string,
+  inAudioFile: string,
+  inImageFile: string,
+  outFile: string,
   title: string,
   artist: string
 ): Promise<void> => {
-  [
-    "-i",
-    `${path}/in.mp3`,
-    "-i",
-    `${path}/resized-cover.png`,
-    "-map",
-    "0",
-    "-map",
-    "1",
-    "-c",
-    "copy",
-    "-disposition:v:1",
-    "attached_pic",
-    "-metadata",
-    `title=${title}`,
-    "-metadata",
-    `artist=${artist}`,
-    `${path}/out.mp3`,
-  ];
-
+  console.log(title, artist);
   const process = spawn(ffmpegPath, [
     "-i",
-    `${path}/in.m4a`,
+    inAudioFile,
     "-i",
-    `${path}/resized-cover.png`,
+    inImageFile,
     "-map",
-    "0",
+    "0:0",
     "-map",
-    "1",
+    "1:0",
     "-c",
     "copy",
     "-id3v2_version",
@@ -71,7 +89,7 @@ export const addMetadata = (
     `title=${title}`,
     "-metadata",
     `artist=${artist}`,
-    `${path}/out.m4a`,
+    outFile,
   ]);
 
   return new Promise((resolve) => {
