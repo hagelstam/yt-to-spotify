@@ -45,7 +45,7 @@ export const convert = async (req: Request, res: Response) => {
       fs.rmSync(DUMP_PATH, {
         recursive: true,
       });
-      return res.status(500).json({ error: "Something went wrong" });
+      return res.status(500).json({ error: "Error creating mp3" });
     }
 
     return res.status(200).json({
@@ -69,6 +69,7 @@ export const download = (req: Request, res: Response) => {
   if (
     !file_name ||
     typeof file_name !== "string" ||
+    file_name.length > 100 ||
     file_name.trim().length === 0
   )
     return res.status(400).json({ error: "Invalid file name" });

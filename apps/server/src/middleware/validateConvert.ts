@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import ytdl from "ytdl-core";
 
 const MAX_VIDEO_LENGTH_MIN = 7;
+const TITLE_MAX_LENGTH = 50;
 
 export const validateConvert = async (
   req: Request,
@@ -31,9 +32,14 @@ export const validateConvert = async (
     )
       throw new Error("Invalid fields");
 
+    if (title.length > TITLE_MAX_LENGTH || artist.length > TITLE_MAX_LENGTH)
+      throw new Error(
+        `Title and artist must be under ${TITLE_MAX_LENGTH} chars`
+      );
+
     if (!ytdl.validateURL(url)) throw new Error("Invalid URL");
 
-    const videoInfo = await ytdl.getInfo(req.body.url);
+    const videoInfo = await ytdl.getInfo(url);
     if (
       Number(videoInfo.videoDetails.lengthSeconds) >
       MAX_VIDEO_LENGTH_MIN * 60

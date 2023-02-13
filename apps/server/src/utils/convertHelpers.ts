@@ -28,7 +28,7 @@ export const downloadCover = async (
   tempFile: string,
   fileOut: string,
   videoId: string,
-  size: number
+  sizePx: number
 ): Promise<void> => {
   console.log("Downloading cover...");
 
@@ -41,7 +41,12 @@ export const downloadCover = async (
   fs.writeFileSync(tempFile, buffer);
 
   await sharp(tempFile)
-    .extract({ height: size, width: size, left: size * 0.75, top: size * 0.1 })
+    .extract({
+      height: sizePx,
+      width: sizePx,
+      left: sizePx * 0.75,
+      top: sizePx * 0.1,
+    })
     .toFile(fileOut);
 
   console.log("Cover downloaded");
