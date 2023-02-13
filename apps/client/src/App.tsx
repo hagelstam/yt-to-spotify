@@ -4,7 +4,6 @@ const App = () => {
   const [url, setUrl] = useState("");
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
-  const [cover, setCover] = useState<File | undefined | null>(undefined);
   const [downloadLink, setDownloadLink] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -16,15 +15,17 @@ const App = () => {
     setIsLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("url", url);
-      formData.append("title", title);
-      formData.append("artist", artist);
-      if (cover) formData.append("cover", cover);
-
       const res = await fetch("http://localhost:8080/api/convert", {
         method: "POST",
-        body: formData,
+        body: JSON.stringify({
+          url,
+          title,
+          artist,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
       });
       const data = await res.json();
 
@@ -81,23 +82,10 @@ const App = () => {
             max={50}
           />
         </div>
-        <div>
-          <label htmlFor="cover">Album cover</label>
-          <input
-            id="cover"
-            name="cover"
-            type="file"
-            accept="image/*"
-            onChange={(e) => setCover(e.target.files?.item(0))}
-          />
-        </div>
         <button type="submit" disabled={isLoading}>
           {isLoading ? "Loading..." : "Convert"}
         </button>
       </form>
-      {cover && (
-        <img alt="Album cover" height={200} src={URL.createObjectURL(cover)} />
-      )}
       {downloadLink.length > 0 && (
         <a href={downloadLink} target="_blank" rel="noreferrer">
           Download
