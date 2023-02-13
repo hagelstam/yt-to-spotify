@@ -6,108 +6,16 @@ import ytdl from "ytdl-core";
 
 export const downloadVideo = (path: string, url: string): Promise<void> => {
   const process = ytdl(url, {
-    filter: "audioandvideo",
+    filter: "audioonly",
     quality: "highestaudio",
-  }).pipe(fs.createWriteStream(`${path}/video.mp4`));
+  }).pipe(fs.createWriteStream(`${path}/in.m4a`));
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     process.on("open", () => {
       console.log("Downloading video...");
     });
-    process.on("error", () => {
-      console.error("Error downloading video");
-      reject();
-    });
     process.on("close", () => {
       console.info("Video downloaded");
-      resolve();
-    });
-  });
-};
-
-export const getThumbnailFromVideo = (path: string): Promise<void> => {
-  const process = spawn(ffmpegPath, [
-    "-i",
-    `${path}/video.mp4`,
-    "-ss",
-    "00:00:01.000",
-    "-frames:v",
-    "1",
-    `${path}/cover.png`,
-  ]);
-
-  return new Promise((resolve, reject) => {
-    process.on("spawn", () => {
-      console.log("Getting thumbnail...");
-    });
-    process.on("error", () => {
-      console.error("Error getting thumbnail");
-      reject();
-    });
-    process.on("exit", () => {
-      console.info("Thumbnail saved");
-      resolve();
-    });
-  });
-};
-
-export const convertVideoToMp3 = (path: string): Promise<void> => {
-  const process = spawn(ffmpegPath, [
-    "-i",
-    `${path}/video.mp4`,
-    `${path}/in.mp3`,
-  ]);
-
-  return new Promise((resolve, reject) => {
-    process.on("spawn", () => {
-      console.log("Converting video to mp3...");
-    });
-    process.on("error", () => {
-      console.error("Error converting video to mp3");
-      reject();
-    });
-    process.on("exit", () => {
-      console.info("Video converted to mp3");
-      resolve();
-    });
-  });
-};
-
-export const addMetadata = (
-  path: string,
-  title: string,
-  artist: string
-): Promise<void> => {
-  const process = spawn(ffmpegPath, [
-    "-i",
-    `${path}/in.mp3`,
-    "-i",
-    `${path}/resized-cover.png`,
-    "-map",
-    "0:0",
-    "-map",
-    "1:0",
-    "-c",
-    "copy",
-    "-id3v2_version",
-    "3",
-    "-metadata",
-    `title=${title}`,
-    "-metadata",
-    `artist=${artist}`,
-    `${path}/out.mp3`,
-  ]);
-
-  return new Promise((resolve, reject) => {
-    process.on("spawn", () => {
-      console.log("Adding metadata...");
-    });
-    process.on("error", () => {
-      console.error("Error adding metadata");
-      reject();
-    });
-    process.on("exit", () => {
-      console.info("Metadata added");
       resolve();
     });
   });
@@ -119,4 +27,60 @@ export const resizeCover = async (path: string): Promise<void> => {
     .resize(500, 500, { fit: "cover" })
     .toFile(`${path}/resized-cover.png`);
   console.log("Cover resized");
+};
+
+export const addMetadata = (
+  path: string,
+  title: string,
+  artist: string
+): Promise<void> => {
+  [
+    "-i",
+    `${path}/in.mp3`,
+    "-i",
+    `${path}/resized-cover.png`,
+    "-map",
+    "0",
+    "-map",
+    "1",
+    "-c",
+    "copy",
+    "-disposition:v:1",
+    "attached_pic",
+    "-metadata",
+    `title=${title}`,
+    "-metadata",
+    `artist=${artist}`,
+    `${path}/out.mp3`,
+  ];
+
+  const process = spawn(ffmpegPath, [
+    "-i",
+    `${path}/in.m4a`,
+    "-i",
+    `${path}/resized-cover.png`,
+    "-map",
+    "0",
+    "-map",
+    "1",
+    "-c",
+    "copy",
+    "-id3v2_version",
+    "3",
+    "-metadata",
+    `title=${title}`,
+    "-metadata",
+    `artist=${artist}`,
+    `${path}/out.m4a`,
+  ]);
+
+  return new Promise((resolve) => {
+    process.on("spawn", () => {
+      console.log("Adding metadata...");
+    });
+    process.on("exit", () => {
+      console.info("Metadata added");
+      resolve();
+    });
+  });
 };

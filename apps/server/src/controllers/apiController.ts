@@ -3,9 +3,7 @@ import fs from "fs";
 import { FILES_PATH, SERVER_URL } from "../utils/constants";
 import {
   addMetadata,
-  convertVideoToMp3,
   downloadVideo,
-  getThumbnailFromVideo,
   resizeCover,
 } from "../utils/convertHelpers";
 
@@ -18,21 +16,16 @@ export const convert = async (req: Request, res: Response) => {
       artist: string;
       url: string;
     };
-    const cover = req.file;
 
     await downloadVideo(DUMP_PATH, url);
-    await convertVideoToMp3(DUMP_PATH);
-    if (!cover) {
-      await getThumbnailFromVideo(DUMP_PATH);
-    }
     await resizeCover(DUMP_PATH);
     await addMetadata(DUMP_PATH, title, artist);
 
-    if (!fs.existsSync(`${DUMP_PATH}/out.mp3`)) {
-      // fs.rmSync(DUMP_PATH, {
-      //   recursive: true,
-      // });
-      return res.status(500).json({ error: "Couldn't process video" });
+    if (!fs.existsSync(`${DUMP_PATH}/out.m4a`)) {
+      fs.rmSync(DUMP_PATH, {
+        recursive: true,
+      });
+      return res.status(500).json({ error: "Something went wring" });
     }
 
     return res
@@ -52,7 +45,7 @@ export const download = (req: Request, res: Response) => {
   if (!fs.existsSync(`${FILES_PATH}/${id}`))
     return res.status(400).json({ error: "Invalid id" });
 
-  return res.download(`${FILES_PATH}/${id}/out.mp3`, () => {
+  return res.download(`${FILES_PATH}/${id}/out.m4a`, () => {
     fs.rmSync(`${FILES_PATH}/${id}`, {
       recursive: true,
     });

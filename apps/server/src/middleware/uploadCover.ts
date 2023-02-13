@@ -1,10 +1,10 @@
 import fs from "fs";
 import multer from "multer";
-import { FILES_PATH } from "./constants";
+import { FILES_PATH } from "../utils/constants";
 
 const MB_IN_BYTES = 1_000_000;
 
-export const multerUpload = multer({
+export const uploadCover = multer({
   storage: multer.diskStorage({
     destination: (req, _file, cb) => {
       fs.mkdirSync(`${FILES_PATH}/${req.id}`);

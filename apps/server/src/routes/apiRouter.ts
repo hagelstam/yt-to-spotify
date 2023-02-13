@@ -1,15 +1,15 @@
 import express from "express";
 import { convert, download } from "../controllers/apiController";
 import { setRequestId } from "../middleware/setReqestId";
+import { uploadCover } from "../middleware/uploadCover";
 import { validateConvert } from "../middleware/validateConvert";
-import { multerUpload } from "../utils/multerUpload";
 
 const apiRouter = express.Router();
 
 apiRouter.post(
   "/convert",
   setRequestId,
-  multerUpload.single("cover"),
+  uploadCover.single("cover"),
   validateConvert,
   convert
 );
