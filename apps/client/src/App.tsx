@@ -4,11 +4,11 @@ const App = () => {
   const [url, setUrl] = useState("");
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
-  const [downloadLink, setDownloadLink] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [downloadLink, setDownloadLink] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,15 +29,14 @@ const App = () => {
       });
       const data = await res.json();
 
-      if (!res.ok) {
-        setIsError(true);
-        setErrorMessage(data.error);
-      } else {
-        setDownloadLink(data.file_path);
-      }
-    } catch (error) {
+      if (!res.ok) throw new Error(data.error);
+
+      setDownloadLink(data.file_path);
+    } catch (err) {
       setIsError(true);
-      setErrorMessage("Something went wrong");
+      setErrorMessage(
+        err instanceof Error ? err.message : "Something went wrong"
+      );
     } finally {
       setIsLoading(false);
     }
