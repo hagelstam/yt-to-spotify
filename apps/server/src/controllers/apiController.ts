@@ -37,8 +37,8 @@ export const convert = async (req: Request, res: Response) => {
       `${DUMP_PATH}/temp.mp3`,
       `${DUMP_PATH}/cover.jpg`,
       `${DUMP_PATH}/out.mp3`,
-      title,
-      artist
+      title.trim(),
+      artist.trim()
     );
 
     if (!fs.existsSync(`${DUMP_PATH}/out.mp3`)) {
@@ -48,9 +48,12 @@ export const convert = async (req: Request, res: Response) => {
       return res.status(500).json({ error: "Something went wrong" });
     }
 
-    return res
-      .status(200)
-      .json({ file_path: `${SERVER_URL}/api/download/${id}` });
+    return res.status(200).json({
+      file_path: `${SERVER_URL}/api/download/${id}?file_name=${title
+        .trim()
+        .split(" ")
+        .join("_")}`,
+    });
   } catch (err) {
     fs.rmSync(DUMP_PATH, {
       recursive: true,
@@ -61,13 +64,25 @@ export const convert = async (req: Request, res: Response) => {
 
 export const download = (req: Request, res: Response) => {
   const { id } = req.params;
+  const { file_name } = req.query as { file_name: string | undefined };
+
+  if (
+    !file_name ||
+    typeof file_name !== "string" ||
+    file_name.trim().length === 0
+  )
+    return res.status(400).json({ error: "Invalid file name" });
 
   if (!fs.existsSync(`${FILES_PATH}/${id}`))
     return res.status(400).json({ error: "Invalid id" });
 
-  return res.download(`${FILES_PATH}/${id}/out.mp3`, () => {
-    fs.rmSync(`${FILES_PATH}/${id}`, {
-      recursive: true,
-    });
-  });
+  return res.download(
+    `${FILES_PATH}/${id}/out.mp3`,
+    `${file_name.trim()}.mp3`,
+    () => {
+      fs.rmSync(`${FILES_PATH}/${id}`, {
+        recursive: true,
+      });
+    }
+  );
 };

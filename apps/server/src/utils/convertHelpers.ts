@@ -71,7 +71,6 @@ export const addMetadata = (
   title: string,
   artist: string
 ): Promise<void> => {
-  console.log(title, artist);
   const process = spawn(ffmpegPath, [
     "-i",
     inAudioFile,
