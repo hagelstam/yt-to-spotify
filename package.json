@@ -1,14 +1,20 @@
 {
-  "private": true,
+  "name": "yt-to-spotify",
+  "module": "./src/index.ts",
+  "type": "module",
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "format": "turbo run format",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "start": "bun run ./src/index.ts",
+    "lint": "eslint . && prettier --list-different .",
+    "format": "prettier --write ."
   },
   "devDependencies": {
-    "turbo": "^1.10.16"
+    "@types/bun": "latest",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.2"
   },
-  "packageManager": "pnpm@7.26.3"
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
 }
