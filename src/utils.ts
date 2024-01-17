@@ -1,12 +1,13 @@
 import fs from 'fs'
 import { pipeline } from 'stream/promises'
+import { DUMP_PATH } from './constants'
 
-const isYouTubeUrl = (url: string): boolean => {
+const isYoutubeUrl = (url: string): boolean => {
   return url.startsWith('https://www.youtube.com/watch?v=')
 }
 
-export const getThumbnailUrl = (url: string): string => {
-  if (!isYouTubeUrl(url)) throw Error('invalid youtube url')
+const getThumbnailUrl = (url: string): string => {
+  if (!isYoutubeUrl(url)) throw Error('invalid youtube url')
 
   const params = new URL(url).searchParams
   const videoId = params.get('v')
@@ -43,7 +44,7 @@ const getAudioUrl = async (url: string): Promise<string> => {
 }
 
 export const downloadAudio = async (url: string): Promise<void> => {
-  if (!isYouTubeUrl(url)) throw Error('invalid youtube url')
+  if (!isYoutubeUrl(url)) throw Error('invalid youtube url')
 
   const audioUrl = await getAudioUrl(url)
 
@@ -53,6 +54,21 @@ export const downloadAudio = async (url: string): Promise<void> => {
 
   const data = res.body as unknown as NodeJS.ReadableStream
 
-  const writer = fs.createWriteStream('james.opus')
+  const writer = fs.createWriteStream(`${DUMP_PATH}/audio.opus`)
+  await pipeline(data, writer)
+}
+
+export const downloadThumbnail = async (url: string): Promise<void> => {
+  if (!isYoutubeUrl(url)) throw Error('invalid youtube url')
+
+  const thumbnailUrl = getThumbnailUrl(url)
+
+  const res = await fetch(thumbnailUrl)
+  if (!res.ok || !res.body)
+    throw Error(`co.wuk.sh returned status code ${res.status}`)
+
+  const data = res.body as unknown as NodeJS.ReadableStream
+
+  const writer = fs.createWriteStream(`${DUMP_PATH}/thumbnail.jpg`)
   await pipeline(data, writer)
 }
