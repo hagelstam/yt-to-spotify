@@ -44,6 +44,8 @@ const getAudioUrl = async (url: string): Promise<string> => {
 }
 
 export const downloadAudio = async (url: string): Promise<void> => {
+  console.info('Downloading audio...')
+
   if (!isYoutubeUrl(url)) throw Error('invalid youtube url')
 
   const audioUrl = await getAudioUrl(url)
@@ -56,9 +58,13 @@ export const downloadAudio = async (url: string): Promise<void> => {
 
   const writer = fs.createWriteStream(`${DUMP_PATH}/audio.opus`)
   await pipeline(data, writer)
+
+  console.info('Audio downloaded.')
 }
 
 export const downloadThumbnail = async (url: string): Promise<void> => {
+  console.info('Downloading thumbnail...')
+
   if (!isYoutubeUrl(url)) throw Error('invalid youtube url')
 
   const thumbnailUrl = getThumbnailUrl(url)
@@ -71,4 +77,6 @@ export const downloadThumbnail = async (url: string): Promise<void> => {
 
   const writer = fs.createWriteStream(`${DUMP_PATH}/thumbnail.jpg`)
   await pipeline(data, writer)
+
+  console.info('Thumbnail downloaded.')
 }
