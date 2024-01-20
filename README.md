@@ -1,6 +1,8 @@
 # YouTube to Spotify
 
+Website for converting YouTube links to Spotify ready mp3 files.
+
 ```bash
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```

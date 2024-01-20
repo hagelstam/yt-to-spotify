@@ -23,8 +23,8 @@ const getAudioUrl = async (url: string): Promise<string> => {
     method: 'POST',
     body: JSON.stringify({
       url,
-      aFormat: 'best',
-      filenamePattern: 'basic',
+      aFormat: 'mp3',
+      filenamePattern: 'classic',
       dubLang: false,
       isAudioOnly: true,
       isNoTTWatermark: true,
@@ -77,7 +77,7 @@ export const downloadThumbnail = async (
 
   const res = await fetch(thumbnailUrl)
   if (!res.ok || !res.body)
-    throw Error(`co.wuk.sh returned status code ${res.status}`)
+    throw Error(`i.ytimg.com returned status ${res.status}`)
 
   const data = res.body as unknown as NodeJS.ReadableStream
 
@@ -89,6 +89,7 @@ export const downloadThumbnail = async (
 
 export const addMetadata = async (
   inAudioFile: string,
+  inImageFile: string,
   title: string,
   artist: string,
   outFile: string,
@@ -96,6 +97,12 @@ export const addMetadata = async (
   const ffmpegArgs: string[] = [
     '-i',
     inAudioFile,
+    '-i',
+    inImageFile,
+    '-map',
+    '0:0',
+    '-map',
+    '1:0',
     '-c',
     'copy',
     '-metadata',
