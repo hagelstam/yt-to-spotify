@@ -24,6 +24,7 @@ app.get('/', (_req, res) => {
 app.post('/convert', validateRequest, async (req, res) => {
   const { youtubeUrl, artistName, songTitle } = req.body
 
+  fs.rmSync(DUMP_PATH, { recursive: true })
   fs.mkdirSync(DUMP_PATH)
 
   await Promise.all([
@@ -39,7 +40,12 @@ app.post('/convert', validateRequest, async (req, res) => {
     FINAL_FILE,
   )
 
-  return res.redirect('/')
+  const fileName = `${artistName}_${songTitle}.mp3`
+
+  return res.download(FINAL_FILE, fileName, (err) => {
+    if (err) return res.status(500).send('Error sending file')
+    if (!res.headersSent) return res.redirect('/')
+  })
 })
 
 app.use((_req, res) => {
@@ -47,5 +53,5 @@ app.use((_req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.info(`Server running on port ${PORT}`)
+  console.info(`Server running on http://localhost:${PORT}`)
 })
