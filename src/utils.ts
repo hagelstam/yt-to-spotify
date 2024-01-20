@@ -13,8 +13,9 @@ const getThumbnailUrl = (url: string): string => {
   const params = new URL(url).searchParams
   const videoId = params.get('v')
 
-  if (!videoId || videoId.length === 0)
+  if (!videoId || videoId.length === 0) {
     throw Error('could not extract video id')
+  }
 
   return `https://img.youtube.com/vi/${videoId}/sddefault.jpg`
 }
@@ -38,7 +39,9 @@ const getAudioUrl = async (url: string): Promise<string> => {
       'Accept-Encoding': 'gip, deflate, br',
     },
   })
-  if (!res.ok) throw Error(`co.wuk.sh returned status code ${res.status}`)
+  if (res.ok) {
+    throw Error(`${res.url} returned status code ${res.status}`)
+  }
 
   const data = (await res.json()) as { url: string }
   return data.url
@@ -53,11 +56,10 @@ export const downloadAudio = async (
   if (!isYoutubeUrl(url)) throw Error('invalid youtube url')
 
   const audioUrl = await getAudioUrl(url)
-
   const res = await fetch(audioUrl)
-  if (!res.ok || !res.body)
-    throw Error(`co.wuk.sh returned status code ${res.status}`)
-
+  if (!res.ok || !res.body) {
+    throw Error(`${res.url} returned status code ${res.status}`)
+  }
   const data = res.body as unknown as NodeJS.ReadableStream
 
   const writer = fs.createWriteStream(outFile)
@@ -75,11 +77,10 @@ export const downloadThumbnail = async (
   if (!isYoutubeUrl(url)) throw Error('invalid youtube url')
 
   const thumbnailUrl = getThumbnailUrl(url)
-
   const res = await fetch(thumbnailUrl)
-  if (!res.ok || !res.body)
-    throw Error(`i.ytimg.com returned status ${res.status}`)
-
+  if (!res.ok || !res.body) {
+    throw Error(`${res.url} returned status ${res.status}`)
+  }
   const data = res.body as unknown as NodeJS.ReadableStream
 
   const writer = fs.createWriteStream(outFile)
@@ -95,7 +96,7 @@ export const addMetadata = async (
   artist: string,
   outFile: string,
 ): Promise<void> => {
-  const ffmpegArgs: string[] = [
+  const ffmpegArgs = [
     '-i',
     inAudioFile,
     '-i',

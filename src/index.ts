@@ -12,17 +12,22 @@ fs.mkdirSync(DUMP_PATH)
 
 const youtubeUrl = 'https://www.youtube.com/watch?v=FL7t09fVFOE'
 const thumbnailFile = `${DUMP_PATH}/thumbnail.jpg`
-const coverFile = `${DUMP_PATH}/cover.jpg`
-const songFile = `${DUMP_PATH}/song.mp3`
+const audioFile = `${DUMP_PATH}/audio.mp3`
+const croppedThumbnailFile = `${DUMP_PATH}/cropped_thumbnail.jpg`
 const finalFile = `${DUMP_PATH}/final.mp3`
 
 ;(async () => {
   const downloadPromises = [
-    downloadAudio(youtubeUrl, songFile),
+    downloadAudio(youtubeUrl, audioFile),
     downloadThumbnail(youtubeUrl, thumbnailFile),
   ]
-
   await Promise.all(downloadPromises)
-  await cropThumbnail(thumbnailFile, coverFile)
-  await addMetadata(songFile, coverFile, 'every step', 'glaive', finalFile)
+  await cropThumbnail(thumbnailFile, croppedThumbnailFile)
+  await addMetadata(
+    audioFile,
+    croppedThumbnailFile,
+    'every step',
+    'glaive',
+    finalFile,
+  )
 })()
