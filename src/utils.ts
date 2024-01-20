@@ -3,20 +3,16 @@ import fs from 'fs'
 import sharp from 'sharp'
 import { pipeline } from 'stream/promises'
 
-const isYoutubeUrl = (url: string): boolean => {
-  return url.startsWith('https://www.youtube.com/watch?v=')
+const getVideoId = (url: string): string => {
+  const videoUrl = new URL(url)
+  const videoId = videoUrl.searchParams.get('v')
+
+  if (!videoId) return videoUrl.pathname.substring('/shorts/'.length)
+  return videoId
 }
 
 const getThumbnailUrl = (url: string): string => {
-  if (!isYoutubeUrl(url)) throw Error('invalid youtube url')
-
-  const params = new URL(url).searchParams
-  const videoId = params.get('v')
-
-  if (!videoId || videoId.length === 0) {
-    throw Error('could not extract video id')
-  }
-
+  const videoId = getVideoId(url)
   return `https://img.youtube.com/vi/${videoId}/sddefault.jpg`
 }
 
@@ -39,7 +35,7 @@ const getAudioUrl = async (url: string): Promise<string> => {
       'Accept-Encoding': 'gip, deflate, br',
     },
   })
-  if (res.ok) {
+  if (!res.ok) {
     throw Error(`${res.url} returned status code ${res.status}`)
   }
 
@@ -47,13 +43,18 @@ const getAudioUrl = async (url: string): Promise<string> => {
   return data.url
 }
 
+export const isYoutubeUrl = (url: string): boolean => {
+  return (
+    url.startsWith('https://www.youtube.com/watch?v=') ||
+    url.startsWith('https://www.youtube.com/shorts/')
+  )
+}
+
 export const downloadAudio = async (
   url: string,
   outFile: string,
 ): Promise<void> => {
   console.info('Downloading audio...')
-
-  if (!isYoutubeUrl(url)) throw Error('invalid youtube url')
 
   const audioUrl = await getAudioUrl(url)
   const res = await fetch(audioUrl)
@@ -73,8 +74,6 @@ export const downloadThumbnail = async (
   outFile: string,
 ): Promise<void> => {
   console.info('Downloading thumbnail...')
-
-  if (!isYoutubeUrl(url)) throw Error('invalid youtube url')
 
   const thumbnailUrl = getThumbnailUrl(url)
   const res = await fetch(thumbnailUrl)
@@ -108,9 +107,9 @@ export const addMetadata = async (
     '-c',
     'copy',
     '-metadata',
-    `title=${title}`,
+    `title="${title}"`,
     '-metadata',
-    `artist=${artist}`,
+    `artist="${artist}"`,
     outFile,
   ]
 
