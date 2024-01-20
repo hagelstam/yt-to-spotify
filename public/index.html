@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="youtube to spotify converter" />
+    <title>YouTube to Spotify Converter</title>
+  </head>
+  <body>
+    <h1>YouTube to Spotify Converter</h1>
+    <form id="convert" action="/convert" method="POST">
+      <div>
+        <label for="youtubeUrl">YouTube URL:</label>
+        <input
+          type="text"
+          id="youtubeUrl"
+          name="youtubeUrl"
+          placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          required
+        />
+      </div>
+      <div>
+        <label for="artistName">Artist Name:</label>
+        <input
+          type="text"
+          id="artistName"
+          name="artistName"
+          placeholder="Rick Astley"
+          required
+        />
+      </div>
+      <div>
+        <label for="songTitle">Song Title:</label>
+        <input
+          type="text"
+          id="songTitle"
+          name="songTitle"
+          placeholder="Never Gonna Give You Up"
+          required
+        />
+      </div>
+      <button type="submit">Convert</button>
+    </form>
+  </body>
+</html>

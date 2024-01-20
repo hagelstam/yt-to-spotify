@@ -3,7 +3,7 @@ import fs from 'fs'
 import sharp from 'sharp'
 import { pipeline } from 'stream/promises'
 
-const getVideoId = (url: string): string => {
+const getVideoId = (url: string) => {
   const videoUrl = new URL(url)
   const videoId = videoUrl.searchParams.get('v')
 
@@ -11,12 +11,12 @@ const getVideoId = (url: string): string => {
   return videoId
 }
 
-const getThumbnailUrl = (url: string): string => {
+const getThumbnailUrl = (url: string) => {
   const videoId = getVideoId(url)
   return `https://img.youtube.com/vi/${videoId}/sddefault.jpg`
 }
 
-const getAudioUrl = async (url: string): Promise<string> => {
+const getAudioUrl = async (url: string) => {
   const res = await fetch('https://co.wuk.sh/api/json', {
     method: 'POST',
     body: JSON.stringify({
@@ -43,17 +43,7 @@ const getAudioUrl = async (url: string): Promise<string> => {
   return data.url
 }
 
-export const isYoutubeUrl = (url: string): boolean => {
-  return (
-    url.startsWith('https://www.youtube.com/watch?v=') ||
-    url.startsWith('https://www.youtube.com/shorts/')
-  )
-}
-
-export const downloadAudio = async (
-  url: string,
-  outFile: string,
-): Promise<void> => {
+export const downloadAudio = async (url: string, outFile: string) => {
   console.info('Downloading audio...')
 
   const audioUrl = await getAudioUrl(url)
@@ -69,11 +59,8 @@ export const downloadAudio = async (
   console.info('Audio downloaded.')
 }
 
-export const downloadThumbnail = async (
-  url: string,
-  outFile: string,
-): Promise<void> => {
-  console.info('Downloading thumbnail...')
+export const downloadCover = async (url: string, outFile: string) => {
+  console.info('Downloading cover...')
 
   const thumbnailUrl = getThumbnailUrl(url)
   const res = await fetch(thumbnailUrl)
@@ -85,21 +72,21 @@ export const downloadThumbnail = async (
   const writer = fs.createWriteStream(outFile)
   await pipeline(data, writer)
 
-  console.info('Thumbnail downloaded.')
+  console.info('Cover downloaded.')
 }
 
-export const addMetadata = async (
-  inAudioFile: string,
-  inImageFile: string,
-  title: string,
+export const addMetadata = (
+  audioFile: string,
+  coverFile: string,
   artist: string,
+  title: string,
   outFile: string,
 ): Promise<void> => {
   const ffmpegArgs = [
     '-i',
-    inAudioFile,
+    audioFile,
     '-i',
-    inImageFile,
+    coverFile,
     '-map',
     '0:0',
     '-map',
@@ -107,9 +94,9 @@ export const addMetadata = async (
     '-c',
     'copy',
     '-metadata',
-    `title="${title}"`,
-    '-metadata',
     `artist="${artist}"`,
+    '-metadata',
+    `title="${title}"`,
     outFile,
   ]
 
@@ -130,15 +117,12 @@ export const addMetadata = async (
   })
 }
 
-export const cropThumbnail = async (
-  inFile: string,
-  outFile: string,
-): Promise<void> => {
-  console.info('Cropping thumbnail...')
+export const cropCover = async (inFile: string, outFile: string) => {
+  console.info('Cropping cover...')
 
   await sharp(inFile)
     .extract({ left: 80, top: 0, width: 480, height: 480 })
     .toFile(outFile)
 
-  console.info('Thumbnail cropped.')
+  console.info('Cover cropped.')
 }
