@@ -1,6 +1,6 @@
+import { exec } from 'child_process'
 import fs from 'fs'
 import { pipeline } from 'stream/promises'
-import { DUMP_PATH } from './constants'
 
 const isYoutubeUrl = (url: string): boolean => {
   return url.startsWith('https://www.youtube.com/watch?v=')
@@ -43,7 +43,10 @@ const getAudioUrl = async (url: string): Promise<string> => {
   return data.url
 }
 
-export const downloadAudio = async (url: string): Promise<void> => {
+export const downloadAudio = async (
+  url: string,
+  outFile: string,
+): Promise<void> => {
   console.info('Downloading audio...')
 
   if (!isYoutubeUrl(url)) throw Error('invalid youtube url')
@@ -56,13 +59,16 @@ export const downloadAudio = async (url: string): Promise<void> => {
 
   const data = res.body as unknown as NodeJS.ReadableStream
 
-  const writer = fs.createWriteStream(`${DUMP_PATH}/audio.opus`)
+  const writer = fs.createWriteStream(outFile)
   await pipeline(data, writer)
 
   console.info('Audio downloaded.')
 }
 
-export const downloadThumbnail = async (url: string): Promise<void> => {
+export const downloadThumbnail = async (
+  url: string,
+  outFile: string,
+): Promise<void> => {
   console.info('Downloading thumbnail...')
 
   if (!isYoutubeUrl(url)) throw Error('invalid youtube url')
@@ -75,8 +81,33 @@ export const downloadThumbnail = async (url: string): Promise<void> => {
 
   const data = res.body as unknown as NodeJS.ReadableStream
 
-  const writer = fs.createWriteStream(`${DUMP_PATH}/thumbnail.jpg`)
+  const writer = fs.createWriteStream(outFile)
   await pipeline(data, writer)
 
   console.info('Thumbnail downloaded.')
+}
+
+export const addMetadata = async (
+  inAudioFile: string,
+  title: string,
+  artist: string,
+  outFile: string,
+): Promise<void> => {
+  const child = exec(
+    `ffmpeg -i "${inAudioFile}" -metadata title="${title}" -metadata artist="${artist}" "${outFile}"`,
+  )
+
+  return new Promise((resolve, reject) => {
+    child.on('spawn', () => {
+      console.info('Adding metadata...')
+    })
+    child.on('error', (error) => {
+      console.error('Error adding metadata')
+      reject(error)
+    })
+    child.on('exit', () => {
+      console.info('Metadata added.')
+      resolve()
+    })
+  })
 }
