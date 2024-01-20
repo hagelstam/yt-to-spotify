@@ -1,5 +1,6 @@
 import { spawn } from 'child_process'
 import fs from 'fs'
+import sharp from 'sharp'
 import { pipeline } from 'stream/promises'
 
 const isYoutubeUrl = (url: string): boolean => {
@@ -15,7 +16,7 @@ const getThumbnailUrl = (url: string): string => {
   if (!videoId || videoId.length === 0)
     throw Error('could not extract video id')
 
-  return `https://i.ytimg.com/vi/${videoId}/hq720.jpg`
+  return `https://img.youtube.com/vi/${videoId}/sddefault.jpg`
 }
 
 const getAudioUrl = async (url: string): Promise<string> => {
@@ -127,4 +128,17 @@ export const addMetadata = async (
       resolve()
     })
   })
+}
+
+export const cropThumbnail = async (
+  inFile: string,
+  outFile: string,
+): Promise<void> => {
+  console.info('Cropping thumbnail...')
+
+  await sharp(inFile)
+    .extract({ left: 80, top: 0, width: 480, height: 480 })
+    .toFile(outFile)
+
+  console.info('Thumbnail cropped.')
 }
