@@ -1,4 +1,4 @@
-import { exec } from 'child_process'
+import { spawn } from 'child_process'
 import fs from 'fs'
 import { pipeline } from 'stream/promises'
 
@@ -93,9 +93,19 @@ export const addMetadata = async (
   artist: string,
   outFile: string,
 ): Promise<void> => {
-  const child = exec(
-    `ffmpeg -i "${inAudioFile}" -metadata title="${title}" -metadata artist="${artist}" "${outFile}"`,
-  )
+  const ffmpegArgs: string[] = [
+    '-i',
+    inAudioFile,
+    '-c',
+    'copy',
+    '-metadata',
+    `title=${title}`,
+    '-metadata',
+    `artist=${artist}`,
+    outFile,
+  ]
+
+  const child = spawn('ffmpeg', ffmpegArgs)
 
   return new Promise((resolve, reject) => {
     child.on('spawn', () => {
