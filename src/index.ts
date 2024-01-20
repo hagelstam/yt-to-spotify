@@ -40,10 +40,11 @@ app.post('/convert', validateRequest, async (req, res) => {
     FINAL_FILE,
   )
 
-  const fileName = `${artistName}_${songTitle}.mp3`
+  const fileName = `${artistName}_${songTitle.split(' ').join('_')}.mp3`
 
   return res.download(FINAL_FILE, fileName, (err) => {
     if (err) return res.status(500).send('Error sending file')
+    console.info(`File sent: ${fileName}`)
     if (!res.headersSent) return res.redirect('/')
   })
 })

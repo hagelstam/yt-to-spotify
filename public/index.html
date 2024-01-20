@@ -5,40 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="youtube to spotify converter" />
     <title>YouTube to Spotify Converter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>YouTube to Spotify Converter</h1>
     <form id="convert" action="/convert" method="POST">
-      <div>
-        <label for="youtubeUrl">YouTube URL:</label>
-        <input
-          type="text"
-          id="youtubeUrl"
-          name="youtubeUrl"
-          placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-          required
-        />
-      </div>
-      <div>
-        <label for="artistName">Artist Name:</label>
-        <input
-          type="text"
-          id="artistName"
-          name="artistName"
-          placeholder="Rick Astley"
-          required
-        />
-      </div>
-      <div>
-        <label for="songTitle">Song Title:</label>
-        <input
-          type="text"
-          id="songTitle"
-          name="songTitle"
-          placeholder="Never Gonna Give You Up"
-          required
-        />
-      </div>
+      <label for="youtubeUrl">YouTube URL:</label>
+      <input
+        type="text"
+        id="youtubeUrl"
+        name="youtubeUrl"
+        placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        required
+      />
+      <label for="artistName">Artist Name:</label>
+      <input
+        type="text"
+        id="artistName"
+        name="artistName"
+        placeholder="Rick Astley"
+        required
+      />
+      <label for="songTitle">Song Title:</label>
+      <input
+        type="text"
+        id="songTitle"
+        name="songTitle"
+        placeholder="Never Gonna Give You Up"
+        required
+      />
       <button type="submit">Convert</button>
     </form>
   </body>
