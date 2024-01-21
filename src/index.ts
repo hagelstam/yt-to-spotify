@@ -42,17 +42,11 @@ app.post('/convert', validateRequest, async (req, res) => {
 
   const fileName = `${artistName}_${songTitle.split(' ').join('_')}.mp3`
 
-  return res.download(FINAL_FILE, fileName, (err) => {
-    if (err) return res.status(500).send('Error sending file')
+  return res.download(FINAL_FILE, fileName, () => {
     console.info(`File sent: ${fileName}`)
-    if (!res.headersSent) return res.redirect('/')
   })
 })
 
-app.use((_req, res) => {
-  return res.redirect('/')
-})
+app.use((_req, res) => res.redirect('/'))
 
-app.listen(PORT, () => {
-  console.info(`Server running on http://localhost:${PORT}`)
-})
+app.listen(PORT, () => console.info(`Server running on port ${PORT}`))

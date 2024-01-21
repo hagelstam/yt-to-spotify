@@ -3,19 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="youtube to spotify converter" />
-    <title>YouTube to Spotify Converter</title>
+    <meta name="description" content="YouTube to Spotify Converter" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap"
       rel="stylesheet"
     />
+    <title>YouTube to Spotify Converter</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <form id="convert" action="/convert" method="POST">
-      <label for="youtubeUrl">YouTube URL:</label>
+    <form method="POST" action="/convert">
+      <label for="youtubeUrl">youtube url:</label>
       <input
         type="text"
         id="youtubeUrl"
@@ -23,7 +23,7 @@
         placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         required
       />
-      <label for="artistName">Artist Name:</label>
+      <label for="artistName">artist name:</label>
       <input
         type="text"
         id="artistName"
@@ -31,7 +31,7 @@
         placeholder="Rick Astley"
         required
       />
-      <label for="songTitle">Song Title:</label>
+      <label for="songTitle">song title:</label>
       <input
         type="text"
         id="songTitle"
@@ -39,7 +39,7 @@
         placeholder="Never Gonna Give You Up"
         required
       />
-      <button type="submit">Convert</button>
+      <button type="submit">convert</button>
     </form>
   </body>
 </html>
