@@ -91,6 +91,7 @@ input {
   border: 1px solid #292730;
   background-color: #05010d;
   border-radius: 8px;
+  color: #fff;
   box-sizing: border-box;
 }
 
@@ -126,4 +127,30 @@ hr {
     hsla(0, 0%, 100%, 0)
   );
   border: 0;
+}
+
+.github-link {
+  text-decoration: none;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 32px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #fff;
+  background: linear-gradient(
+    90.33deg,
+    rgba(34, 141, 255, 0.15),
+    rgba(109, 66, 252, 0.15)
+  );
+  background-position-x: -1px;
+  background-size: calc(100% + 2px) 100%;
+  border: 1px solid hsla(0, 0%, 100%, 0.15);
+  border-radius: 16px;
 }
