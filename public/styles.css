@@ -18,11 +18,16 @@ form {
   background-color: #000;
   padding: 16px;
   border-radius: 8px;
-  max-width: 100%;
-  min-width: 400px;
   display: flex;
+  width: 400px;
   flex-direction: column;
   position: relative;
+}
+
+@media (max-width: 500px) {
+  form {
+    width: 80%;
+  }
 }
 
 form::before {
