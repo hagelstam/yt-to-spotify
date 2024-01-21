@@ -48,8 +48,7 @@ form {
 
 @media (max-width: 600px) {
   form {
-    min-width: 0;
-    width: 100%;
+    min-width: 80%;
   }
 }
 
