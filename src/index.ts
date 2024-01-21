@@ -24,7 +24,9 @@ app.get('/', (_req, res) => {
 app.post('/convert', validateRequest, async (req, res) => {
   const { youtubeUrl, artistName, songTitle } = req.body
 
-  fs.rmSync(DUMP_PATH, { recursive: true })
+  if (fs.existsSync(DUMP_PATH)) {
+    fs.rmSync(DUMP_PATH, { recursive: true })
+  }
   fs.mkdirSync(DUMP_PATH)
 
   await Promise.all([
