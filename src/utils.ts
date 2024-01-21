@@ -49,7 +49,7 @@ export const downloadAudio = async (url: string, outFile: string) => {
   const audioUrl = await getAudioUrl(url)
   const res = await fetch(audioUrl)
   if (!res.ok || !res.body) {
-    throw Error(`${res.url} returned status code ${res.status}`)
+    throw Error(`could not download audio`)
   }
   const data = res.body as unknown as NodeJS.ReadableStream
 
@@ -65,7 +65,7 @@ export const downloadCover = async (url: string, outFile: string) => {
   const thumbnailUrl = getThumbnailUrl(url)
   const res = await fetch(thumbnailUrl)
   if (!res.ok || !res.body) {
-    throw Error(`${res.url} returned status ${res.status}`)
+    throw Error('cover not found')
   }
   const data = res.body as unknown as NodeJS.ReadableStream
 

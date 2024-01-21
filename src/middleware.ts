@@ -16,25 +16,29 @@ export const validateRequest = (
   res: Response,
   next: NextFunction,
 ) => {
-  const { youtubeUrl, artistName, songTitle } = req.body
+  try {
+    const { youtubeUrl, artistName, songTitle } = req.body
 
-  if (!youtubeUrl || !artistName || !songTitle) {
-    return res.status(400).send('missing required fields')
+    if (!youtubeUrl || !artistName || !songTitle) {
+      return res.status(400).send('missing required fields')
+    }
+
+    if (!isYoutubeUrl(youtubeUrl)) {
+      return res.status(400).send('invalid youtube url')
+    }
+
+    const sanitizedArtistName = sanitizeString(artistName)
+    const sanitizedSongTitle = sanitizeString(songTitle)
+
+    if (sanitizedArtistName.length === 0 || sanitizedSongTitle.length === 0) {
+      return res.status(400).send('invalid artist name or song title')
+    }
+
+    req.body.artistName = sanitizedArtistName
+    req.body.songTitle = sanitizedSongTitle
+
+    return next()
+  } catch (err) {
+    return res.status(500).send('error parsing request body')
   }
-
-  if (!isYoutubeUrl(youtubeUrl)) {
-    return res.status(400).send('invalid youtube url')
-  }
-
-  const sanitizedArtistName = sanitizeString(artistName)
-  const sanitizedSongTitle = sanitizeString(songTitle)
-
-  if (sanitizedArtistName.length === 0 || sanitizedSongTitle.length === 0) {
-    return res.status(400).send('invalid artist name or song title')
-  }
-
-  req.body.artistName = sanitizedArtistName
-  req.body.songTitle = sanitizedSongTitle
-
-  return next()
 }
