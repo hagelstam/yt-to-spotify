@@ -27,7 +27,6 @@
     "isolatedModules": true,
     "strictPropertyInitialization": false,
     "useUnknownInCatchVariables": true,
-    "noPropertyAccessFromIndexSignature": true,
   },
   "include": ["./src/**/*.ts"],
 }

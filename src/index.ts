@@ -49,9 +49,8 @@ app.post('/convert', validateRequest, async (req, res) => {
       console.info(`File sent: ${fileName}`)
     })
   } catch (err) {
-    return res
-      .status(500)
-      .send(err instanceof Error ? err.message : 'error converting')
+    console.error(err instanceof Error ? err.message : err)
+    return res.redirect('/')
   }
 })
 

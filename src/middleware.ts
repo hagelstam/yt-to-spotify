@@ -39,8 +39,7 @@ export const validateRequest = (
 
     return next()
   } catch (err) {
-    return res
-      .status(400)
-      .send(err instanceof Error ? err.message : 'error parsing request')
+    console.error(`ERROR: ${err instanceof Error ? err.message : err}`)
+    return res.redirect('/')
   }
 }

@@ -1,6 +1,6 @@
 import path from 'path'
 
-export const PORT = 3000
+export const PORT = Number(process.env.PORT) || 3000
 
 export const DUMP_PATH = path.join(__dirname, '../temp')
 
