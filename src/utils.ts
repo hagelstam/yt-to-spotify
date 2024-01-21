@@ -94,9 +94,9 @@ export const addMetadata = (
     '-c',
     'copy',
     '-metadata',
-    `artist="${artist}"`,
+    `artist=${artist}`,
     '-metadata',
-    `title="${title}"`,
+    `title=${title}`,
     outFile,
   ]
 
