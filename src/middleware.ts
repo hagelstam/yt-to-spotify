@@ -20,18 +20,18 @@ export const validateRequest = (
     const { youtubeUrl, artistName, songTitle } = req.body
 
     if (!youtubeUrl || !artistName || !songTitle) {
-      return res.status(400).send('missing required fields')
+      throw Error('missing required fields')
     }
 
     if (!isYoutubeUrl(youtubeUrl)) {
-      return res.status(400).send('invalid youtube url')
+      throw Error('invalid youtube url')
     }
 
     const sanitizedArtistName = sanitizeString(artistName)
     const sanitizedSongTitle = sanitizeString(songTitle)
 
     if (sanitizedArtistName.length === 0 || sanitizedSongTitle.length === 0) {
-      return res.status(400).send('invalid artist name or song title')
+      throw Error('invalid artist name or song title')
     }
 
     req.body.artistName = sanitizedArtistName
@@ -39,6 +39,8 @@ export const validateRequest = (
 
     return next()
   } catch (err) {
-    return res.status(500).send('error parsing request body')
+    return res
+      .status(400)
+      .send(err instanceof Error ? err.message : 'error parsing request')
   }
 }

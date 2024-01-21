@@ -48,10 +48,10 @@ app.post('/convert', validateRequest, async (req, res) => {
     return res.download(FINAL_FILE, fileName, () => {
       console.info(`File sent: ${fileName}`)
     })
-  } catch (error) {
+  } catch (err) {
     return res
       .status(500)
-      .send(error instanceof Error ? error.message : 'error converting')
+      .send(err instanceof Error ? err.message : 'error converting')
   }
 })
 
