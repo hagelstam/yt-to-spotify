@@ -5,7 +5,7 @@ Convert YouTube links to Spotify ready .mp3 files.
 ## Screenshot
 
 <a href="#">
-  <img src="screenshot.png" alt="screenshot" width="800"/>
+  <img src="screenshot.png" alt="screenshot" width="600"/>
 </a>
 
 ## Built with

@@ -1,3 +1,4 @@
+import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg'
 import { spawn } from 'child_process'
 import fs from 'fs'
 import sharp from 'sharp'
@@ -100,17 +101,17 @@ export const addMetadata = (
     outFile,
   ]
 
-  const child = spawn('ffmpeg', ffmpegArgs)
+  const process = spawn(ffmpegPath, ffmpegArgs)
 
   return new Promise((resolve, reject) => {
-    child.on('spawn', () => {
+    process.on('spawn', () => {
       console.info('Adding metadata...')
     })
-    child.on('error', (error) => {
+    process.on('error', (error) => {
       console.error('Error adding metadata')
       reject(error)
     })
-    child.on('exit', () => {
+    process.on('exit', () => {
       console.info('Metadata added.')
       resolve()
     })

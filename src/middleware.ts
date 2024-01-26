@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
+import { rateLimit } from 'express-rate-limit'
 
-const sanitizeString = (input: string) => {
+const MINUTE_MS = 60 * 1000
+
+const sanitize = (input: string) => {
   return input.replace(/<\/?[^>]+(>|$)/g, '').trim()
 }
 
@@ -11,7 +14,7 @@ const isYoutubeUrl = (url: string) => {
   )
 }
 
-export const validateRequest = (
+export const validateBody = (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -27,8 +30,8 @@ export const validateRequest = (
       throw Error('invalid youtube url')
     }
 
-    const sanitizedArtistName = sanitizeString(artistName)
-    const sanitizedSongTitle = sanitizeString(songTitle)
+    const sanitizedArtistName = sanitize(artistName)
+    const sanitizedSongTitle = sanitize(songTitle)
 
     if (sanitizedArtistName.length === 0 || sanitizedSongTitle.length === 0) {
       throw Error('invalid artist name or song title')
@@ -43,3 +46,14 @@ export const validateRequest = (
     return res.redirect('/')
   }
 }
+
+export const limiter = rateLimit({
+  windowMs: MINUTE_MS,
+  limit: 6, // Limit each IP to 6 requests/minute
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: (_req, res) => {
+    console.error('IP got rate limited')
+    res.redirect('/')
+  },
+})

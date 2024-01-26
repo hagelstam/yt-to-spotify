@@ -9,7 +9,7 @@ import {
   FINAL_FILE,
   PORT,
 } from './constants'
-import { validateRequest } from './middleware'
+import { limiter, validateBody } from './middleware'
 import { addMetadata, cropCover, downloadAudio, downloadCover } from './utils'
 
 const app = express()
@@ -21,7 +21,7 @@ app.get('/', (_req, res) => {
   return res.sendFile(path.join(__dirname, '../public', 'index.html'))
 })
 
-app.post('/convert', validateRequest, async (req, res) => {
+app.post('/convert', limiter, validateBody, async (req, res) => {
   try {
     const { youtubeUrl, artistName, songTitle } = req.body
 
