@@ -112,6 +112,11 @@ button:hover {
   background-color: #fff;
 }
 
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 hr {
   line-height: 22px;
   box-sizing: border-box;

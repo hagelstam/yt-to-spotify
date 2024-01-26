@@ -43,7 +43,7 @@
       <p>Convert YouTube links to Spotify ready .mp3 files.</p>
     </header>
     <main>
-      <form method="POST" action="/convert">
+      <form method="POST" action="/convert" id="convertForm">
         <label for="youtubeUrl">YouTube URL:</label>
         <input
           type="text"
@@ -69,8 +69,21 @@
           required
         />
         <hr />
-        <button type="submit">Convert</button>
+        <button type="submit" id="convertButton">Convert</button>
       </form>
     </main>
+
+    <script>
+      const form = document.getElementById('convertForm')
+      const button = document.getElementById('convertButton')
+
+      form.addEventListener('submit', () => {
+        button.disabled = true
+
+        setTimeout(() => {
+          button.disabled = false
+        }, 5 * 1000)
+      })
+    </script>
   </body>
 </html>
