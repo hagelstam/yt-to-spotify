@@ -55,10 +55,10 @@ form {
 form::before {
   position: absolute;
   content: '';
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
   background: linear-gradient(
       100.41deg,
       rgba(5, 45, 255, 0.6) 0.52%,
@@ -72,7 +72,7 @@ form::before {
       #051eff 101.52%
     ),
     #fff;
-  border-radius: 9999px;
+  border-radius: 8px;
   filter: blur(100px);
   opacity: 0.5;
   z-index: -1;
