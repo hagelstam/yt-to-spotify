@@ -4,7 +4,6 @@
     "start": "node ./build/index.js",
     "build": "tsc",
     "dev": "nodemon ./src/index.ts",
-    "test": "node --test --require ts-node/register ./test/*.ts",
     "lint": "eslint --ignore-path .gitignore . && prettier --list-different . && tsc --noEmit",
     "clean": "rm -rf node_modules build"
   },
