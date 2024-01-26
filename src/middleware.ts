@@ -4,7 +4,7 @@ const sanitizeString = (input: string) => {
   return input.replace(/<\/?[^>]+(>|$)/g, '').trim()
 }
 
-export const isYoutubeUrl = (url: string) => {
+const isYoutubeUrl = (url: string) => {
   return (
     url.startsWith('https://www.youtube.com/watch?v=') ||
     url.startsWith('https://www.youtube.com/shorts/')
