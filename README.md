@@ -8,18 +8,17 @@ Convert YouTube links to Spotify ready .mp3 files.
   <img src="screenshot.png" alt="screenshot" width="800"/>
 </a>
 
+## Built with
+
+- Express
+- ffmpeg
+
 ## Get started
 
 ```bash
-git clone https://github.com/MaximilianHagelstam/yt-to-spotify
-cd yt-to-spotify
-
+# install dependencies
 npm install
+
+# run in dev mode
 npm run dev
 ```
-
-## Tech stack
-
-- Express
-- Docker
-- ffmpeg
