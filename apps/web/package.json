@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "format:check": "prettier --check '**/*.{ts,tsx,mjs,json}'",
-    "format:write": "prettier --write ."
+    "format:write": "prettier --write .",
+    "clean": "rm -rf .next node_modules"
   },
   "dependencies": {
     "next": "15.1.6",
