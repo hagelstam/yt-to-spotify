@@ -6,3 +6,10 @@ services:
     restart: unless-stopped
     ports:
       - 3000:3000
+  converter:
+    build:
+      context: ./apps/converter
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 8080:8080
