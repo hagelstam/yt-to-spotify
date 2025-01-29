@@ -8,8 +8,9 @@ const geistSans = Geist({
 })
 
 export const metadata: Metadata = {
-  title: 'YouTube to Spotify',
-  description: 'Convert YouTube links to Spotify ready .mp3 files',
+  title: 'Xenon',
+  description:
+    'Turn YouTube links into high-quality, metadata-rich audio files',
 }
 
 export default function RootLayout({
