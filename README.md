@@ -1,3 +1,3 @@
-# YouTube to Spotify
+# Xenon
 
-Convert YouTube links to Spotify ready .mp3 files.
+Turn YouTube links into high-quality, metadata-rich audio files.
