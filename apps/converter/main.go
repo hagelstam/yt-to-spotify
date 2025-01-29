@@ -52,6 +52,8 @@ func downloadAudio(url string) error {
 		"yt-dlp",
 		"-x",
 		"--audio-format", "mp3",
+		"--output", "song.mp3",
+		"--postprocessor-args", "-metadata title='Hoodbyair' -metadata artist='Playboi Carti'",
 		url,
 		"--ffmpeg-location", "/usr/bin/ffmpeg",
 	)
