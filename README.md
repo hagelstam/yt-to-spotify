@@ -1,3 +1,3 @@
-# Xenon
+# dwnldr
 
-Turn YouTube links into high-quality, metadata-rich audio files.
+Download high-quality, metadata-rich audio files.

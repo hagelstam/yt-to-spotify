@@ -1,13 +1,7 @@
 services:
-  web:
+  app:
     build:
-      context: ./web
-      dockerfile: Dockerfile
-    ports:
-      - 3000:3000
-  converter:
-    build:
-      context: ./converter
+      context: .
       dockerfile: Dockerfile
     ports:
       - 8080:8080
