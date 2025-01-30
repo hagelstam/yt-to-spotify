@@ -1,11 +1,36 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
 )
+
+type Error struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+func (e *Error) Error() string {
+	return e.Message
+}
+
+type Status string
+
+const (
+	StatusProgress  Status = "progress"
+	StatusCompleted Status = "completed"
+	StatusError     Status = "error"
+)
+
+type Response struct {
+	Status  Status `json:"status"`
+	Message string `json:"message"`
+	Error   string `json:"error,omitempty"`
+}
 
 func handleConvert(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -17,69 +42,80 @@ func handleConvert(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
 
-	flusher, ok := w.(http.Flusher)
-	if !ok {
-		http.Error(w, "streaming unsupported", http.StatusInternalServerError)
+	url := r.URL.Query().Get("url")
+	title := r.URL.Query().Get("title")
+	artist := r.URL.Query().Get("artist")
+
+	if url == "" || title == "" || artist == "" {
+		sendErr(w, &Error{Code: "missing_params", Message: "missing required query params"})
 		return
 	}
 
-	url := "https://www.youtube.com/watch?v=sf0PJsknZiM"
-	title := "ur the moon"
-	artist := "Carti"
-
-	sendSSE(w, flusher, "Validating YouTube link...")
+	sendRes(w, Response{Status: StatusProgress, Message: "Validating YouTube link..."})
 	if !isValidURL(url) {
-		http.Error(w, "invalid YouTube link", http.StatusBadRequest)
-		return
+		sendErr(w, &Error{Code: "invalid_url", Message: "invalid YouTube link"})
 	}
 
-	sendSSE(w, flusher, "Validating video duration...")
+	sendRes(w, Response{Status: StatusProgress, Message: "Validating video duration..."})
 	duration, err := getVideoDuration(url)
 	if err != nil {
-		http.Error(w, "error getting video duration", http.StatusInternalServerError)
+		sendErr(w, &Error{Code: "duration_error", Message: "error getting video duration"})
 		return
 	}
 	if duration > (5 * time.Minute) {
-		http.Error(w, "video is longer than 5 minutes", http.StatusBadRequest)
+		sendErr(w, &Error{Code: "duration_error", Message: "video is longer than 5 minutes"})
 		return
 	}
 
-	sendSSE(w, flusher, "Getting thumbnail URL...")
+	sendRes(w, Response{Status: StatusProgress, Message: "Getting thumbnail URL..."})
 	thumbnailURL, err := getThumbnailURL(url)
 	if err != nil {
-		http.Error(w, "error getting thumbnail URL", http.StatusInternalServerError)
+		sendErr(w, &Error{Code: "thumbnail_error", Message: "error getting thumbnail URL"})
 		return
 	}
 
-	sendSSE(w, flusher, "Downloading thumbnail...")
+	sendRes(w, Response{Status: StatusProgress, Message: "Downloading thumbnail..."})
 	thumbnail, err := downloadThumbnail(thumbnailURL)
 	if err != nil {
-		http.Error(w, "error downloading thumbnail", http.StatusInternalServerError)
+		sendErr(w, &Error{Code: "thumbnail_error", Message: "error downloading thumbnail"})
 		return
 	}
 
-	sendSSE(w, flusher, "Cropping thumbnail...")
+	sendRes(w, Response{Status: StatusProgress, Message: "Cropping thumbnail..."})
 	croppedCover, err := cropCover(thumbnail)
 	if err != nil {
-		http.Error(w, "error cropping thumbnail", http.StatusInternalServerError)
+		sendErr(w, &Error{Code: "thumbnail_error", Message: "error cropping thumbnail"})
 		return
 	}
 
-	sendSSE(w, flusher, "Downloading and embedding audio...")
+	sendRes(w, Response{Status: StatusProgress, Message: "Downloading and embedding audio..."})
 	if err := downloadAudio(url, croppedCover, title, artist); err != nil {
-		http.Error(w, "error downloading video", http.StatusInternalServerError)
+		sendErr(w, &Error{Code: "audio_error", Message: "error downloading audio"})
 		return
 	}
 
-	sendSSE(w, flusher, "Done!!!")
+	sendRes(w, Response{Status: StatusCompleted, Message: "Conversion completed"})
 }
 
-func sendSSE(w http.ResponseWriter, flusher http.Flusher, msg string) {
-	_, err := fmt.Fprintf(w, "data: %s\n\n", msg)
+func sendRes(w http.ResponseWriter, res Response) {
+	data, _ := json.Marshal(res)
+
+	_, err := fmt.Fprintf(w, "data: %s\n\n", data)
 	if err != nil {
 		log.Println("Client disconnected")
 	}
-	flusher.Flush()
+
+	if f, ok := w.(http.Flusher); ok {
+		f.Flush()
+	}
+}
+
+func sendErr(w http.ResponseWriter, err error) {
+	var convErr *Error
+	if !errors.As(err, &convErr) {
+		convErr = &Error{Code: "internal_error", Message: err.Error()}
+	}
+	sendRes(w, Response{Status: "error", Error: convErr.Message})
 }
 
 func main() {

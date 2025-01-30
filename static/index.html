@@ -7,7 +7,12 @@
   </head>
   <body>
     <h1>dwnldr</h1>
-    <button onclick="startConversion()">Start Conversion</button>
+    <div>
+      <input type="text" id="url" placeholder="YouTube URL" />
+      <input type="text" id="title" placeholder="Title" />
+      <input type="text" id="artist" placeholder="Artist" />
+      <button id="convertBtn" onclick="startConversion()">Convert</button>
+    </div>
     <p id="status"></p>
     <script src="script.js"></script>
   </body>
