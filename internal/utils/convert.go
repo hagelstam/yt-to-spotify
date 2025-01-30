@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"bytes"
@@ -17,13 +17,13 @@ import (
 	"time"
 )
 
-func isValidURL(url string) bool {
+func IsValidURL(url string) bool {
 	regex := `^(https?://)?(www\.)?(youtube\.com|youtu\.be)/.+$`
 	matched, err := regexp.MatchString(regex, url)
 	return matched && err == nil
 }
 
-func getVideoDuration(url string) (time.Duration, error) {
+func GetVideoDuration(url string) (time.Duration, error) {
 	cmd := exec.Command("yt-dlp", "--get-duration", url)
 	output, err := cmd.Output()
 	if err != nil {
@@ -51,7 +51,7 @@ func parseDuration(duration string) (time.Duration, error) {
 	return time.Duration(seconds) * time.Second, nil
 }
 
-func getThumbnailURL(url string) (string, error) {
+func GetThumbnailURL(url string) (string, error) {
 	cmd := exec.Command("yt-dlp", "--get-thumbnail", url)
 	output, err := cmd.Output()
 	if err != nil {
@@ -60,7 +60,7 @@ func getThumbnailURL(url string) (string, error) {
 	return strings.TrimSpace(string(output)), nil
 }
 
-func downloadThumbnail(url string) ([]byte, error) {
+func DownloadThumbnail(url string) ([]byte, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -69,7 +69,7 @@ func downloadThumbnail(url string) ([]byte, error) {
 	return io.ReadAll(resp.Body)
 }
 
-func cropCover(imgData []byte) ([]byte, error) {
+func CropCover(imgData []byte) ([]byte, error) {
 	img, _, err := image.Decode(bytes.NewReader(imgData))
 	if err != nil {
 		return nil, err
@@ -101,7 +101,7 @@ func cropCover(imgData []byte) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func downloadAudio(url string, imgData []byte, title string, artist string) error {
+func DownloadAudio(url string, imgData []byte, title string, artist string) error {
 	if err := os.WriteFile("cover.jpg", imgData, 0644); err != nil {
 		return fmt.Errorf("failed to save thumbnail: %w", err)
 	}

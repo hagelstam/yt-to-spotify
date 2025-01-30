@@ -2,11 +2,13 @@ FROM golang:1.23-alpine as build
 
 WORKDIR /app
 
-COPY go.mod ./
+COPY go.mod go.sum ./
+
+RUN go mod download
 
 COPY . .
 
-RUN go build -o main main.go
+RUN go build -o main ./cmd/main.go
 
 FROM debian:bullseye-slim
 
