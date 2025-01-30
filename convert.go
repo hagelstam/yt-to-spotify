@@ -69,7 +69,7 @@ func downloadThumbnail(url string) ([]byte, error) {
 	return io.ReadAll(resp.Body)
 }
 
-func cropThumbnail(imgData []byte) ([]byte, error) {
+func cropCover(imgData []byte) ([]byte, error) {
 	img, _, err := image.Decode(bytes.NewReader(imgData))
 	if err != nil {
 		return nil, err
@@ -101,8 +101,8 @@ func cropThumbnail(imgData []byte) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func downloadAudio(url string, thumbnailData []byte) error {
-	if err := os.WriteFile("cover.jpg", thumbnailData, 0644); err != nil {
+func downloadAudio(url string, imgData []byte, title string, artist string) error {
+	if err := os.WriteFile("cover.jpg", imgData, 0644); err != nil {
 		return fmt.Errorf("failed to save thumbnail: %w", err)
 	}
 	defer os.Remove("cover.jpg")
@@ -143,8 +143,8 @@ func downloadAudio(url string, thumbnailData []byte) error {
 		"-i", "cover.jpg",
 		"-map", "0:0",
 		"-map", "1:0",
-		"-metadata", "title=ur the moon",
-		"-metadata", "artist=Playboi Carti",
+		"-metadata", "title="+title,
+		"-metadata", "artist="+artist,
 		"-c:a", "copy",
 		"-c:v", "copy",
 		"-id3v2_version", "3",
@@ -161,52 +161,4 @@ func downloadAudio(url string, thumbnailData []byte) error {
 	}
 
 	return nil
-}
-
-func main() {
-	url := "https://www.youtube.com/watch?v=sf0PJsknZiM"
-
-	start := time.Now()
-	defer func() {
-		elapsed := time.Since(start)
-		fmt.Printf("Conversion took %.2f seconds\n", elapsed.Seconds())
-	}()
-
-	if !isValidURL(url) {
-		fmt.Printf("invalid YouTube link: %s\n", url)
-		return
-	}
-
-	duration, err := getVideoDuration(url)
-	if err != nil {
-		fmt.Printf("error getting duration: %s\n", err)
-		os.Exit(1)
-	}
-	if duration > (5 * time.Minute) {
-		fmt.Printf("video is longer than 5 minutes: %d seconds\n", duration)
-		os.Exit(1)
-	}
-
-	thumbnailURL, err := getThumbnailURL(url)
-	if err != nil {
-		fmt.Printf("error getting thumbnail URL: %s\n", err)
-		os.Exit(1)
-	}
-
-	thumbnail, err := downloadThumbnail(thumbnailURL)
-	if err != nil {
-		fmt.Printf("error downloading thumbnail: %s\n", err)
-		os.Exit(1)
-	}
-
-	croppedThumbnail, err := cropThumbnail(thumbnail)
-	if err != nil {
-		fmt.Printf("error cropping thumbnail: %s\n", err)
-		os.Exit(1)
-	}
-
-	if err := downloadAudio(url, croppedThumbnail); err != nil {
-		fmt.Printf("error downloading video: %s\n", err)
-		os.Exit(1)
-	}
 }
