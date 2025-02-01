@@ -1,6 +1,29 @@
+---
+import success from '../assets/success.svg';
+import error from '../assets/error.svg';
+---
+
 <div
   class="flex flex-col gap-4 rounded-xl bg-white/50 p-8 ring-1 shadow-lg ring-black/5 backdrop-blur-lg"
 >
+  <div id="success" class="hidden">
+    <div
+      class="flex h-12 flex-row items-center gap-2 rounded-lg bg-green-100 p-4 text-green-800"
+    >
+      <img height="16px" width="16px" src={success.src} alt="success" />
+      <p class="text-sm font-bold">Successfully converted</p>
+    </div>
+  </div>
+
+  <div id="error" class="hidden">
+    <div
+      class="flex h-12 flex-row items-center gap-2 rounded-lg bg-red-100 p-4 text-red-800"
+    >
+      <img height="16px" width="16px" src={error.src} alt="error" />
+      <p id="errorText" class="text-sm font-bold">Error converting</p>
+    </div>
+  </div>
+
   <div class="flex flex-col gap-1">
     <label for="url" class="text-gray-700">YouTube URL</label>
     <input
@@ -39,12 +62,25 @@
 
   <button
     id="convertBtn"
-    class="mt-4 w-full rounded-full bg-gray-900 py-2 text-white transition ease-in-out hover:bg-gray-800"
+    class="mt-4 w-full rounded-full bg-gray-900 py-2 text-white transition ease-in-out hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-700"
   >
     Convert
   </button>
 
-  <p id="status" class="mt-4 text-center text-gray-700"></p>
+  <div class="mt-4 flex flex-col gap-1">
+    <p id="status" class="mb-1 text-base font-medium text-gray-700"></p>
+    <div
+      id="progressContainer"
+      class="relative hidden h-4 w-full rounded-full bg-gray-200"
+    >
+      <div
+        id="progressBar"
+        class="h-full rounded-full bg-indigo-500 transition-all duration-300"
+        style="width: 0%"
+      >
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="../scripts/convert.ts"></script>

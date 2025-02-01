@@ -1,0 +1,21 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "../"
+    },
+    {
+      "name": "api",
+      "path": "../api"
+    },
+    {
+      "name": "web",
+      "path": "../web"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "node_modules/": true
+    }
+  }
+}

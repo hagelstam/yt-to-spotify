@@ -22,52 +22,52 @@ func (s *Server) ConvertHandler(w http.ResponseWriter, r *http.Request) {
 	artist := r.URL.Query().Get("artist")
 
 	if url == "" || title == "" || artist == "" {
-		s.SendErr(w, &Error{Code: "missing_params", Message: "missing required query params"})
+		s.SendErr(w, "missing required query params")
 		return
 	}
 
-	s.SendRes(w, Response{Status: StatusProgress, Message: "Validating YouTube link..."})
+	s.SendRes(w, StatusProgress, "Validating YouTube URL...", 10)
 	if !utils.IsValidURL(url) {
-		s.SendErr(w, &Error{Code: "invalid_url", Message: "invalid YouTube link"})
+		s.SendErr(w, "invalid YouTube link")
 	}
 
-	s.SendRes(w, Response{Status: StatusProgress, Message: "Validating video duration..."})
+	s.SendRes(w, StatusProgress, "Validating video duration...", 20)
 	duration, err := utils.GetVideoDuration(url)
 	if err != nil {
-		s.SendErr(w, &Error{Code: "duration_error", Message: "error getting video duration"})
+		s.SendErr(w, "error getting video duration")
 		return
 	}
 	if duration > (5 * time.Minute) {
-		s.SendErr(w, &Error{Code: "duration_error", Message: "video is longer than 5 minutes"})
+		s.SendErr(w, "video is longer than 5 minutes")
 		return
 	}
 
-	s.SendRes(w, Response{Status: StatusProgress, Message: "Getting thumbnail URL..."})
+	s.SendRes(w, StatusProgress, "Getting thumbnail URL...", 40)
 	thumbnailURL, err := utils.GetThumbnailURL(url)
 	if err != nil {
-		s.SendErr(w, &Error{Code: "thumbnail_error", Message: "error getting thumbnail URL"})
+		s.SendErr(w, "error getting thumbnail URL")
 		return
 	}
 
-	s.SendRes(w, Response{Status: StatusProgress, Message: "Downloading thumbnail..."})
+	s.SendRes(w, StatusProgress, "Downloading thumbnail...", 50)
 	thumbnail, err := utils.DownloadThumbnail(thumbnailURL)
 	if err != nil {
-		s.SendErr(w, &Error{Code: "thumbnail_error", Message: "error downloading thumbnail"})
+		s.SendErr(w, "error downloading thumbnail")
 		return
 	}
 
-	s.SendRes(w, Response{Status: StatusProgress, Message: "Cropping thumbnail..."})
+	s.SendRes(w, StatusProgress, "Cropping thumbnail...", 70)
 	croppedCover, err := utils.CropCover(thumbnail)
 	if err != nil {
-		s.SendErr(w, &Error{Code: "thumbnail_error", Message: "error cropping thumbnail"})
+		s.SendErr(w, "error cropping thumbnail")
 		return
 	}
 
-	s.SendRes(w, Response{Status: StatusProgress, Message: "Downloading and embedding audio..."})
+	s.SendRes(w, StatusProgress, "Downloading and embedding audio...", 80)
 	if err := utils.DownloadAudio(url, croppedCover, title, artist); err != nil {
-		s.SendErr(w, &Error{Code: "audio_error", Message: "error downloading audio"})
+		s.SendErr(w, "error downloading audio")
 		return
 	}
 
-	s.SendRes(w, Response{Status: StatusCompleted, Message: "Conversion completed"})
+	s.SendRes(w, StatusCompleted, "Conversion completed", 100)
 }
