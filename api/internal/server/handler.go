@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/hagelstam/dwnldr/internal/utils"
+	"github.com/hagelstam/dwnldr/api/internal/utils"
 )
 
 func (s *Server) ConvertHandler(w http.ResponseWriter, r *http.Request) {

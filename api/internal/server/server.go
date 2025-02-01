@@ -6,11 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"os"
-	"strconv"
 	"time"
-
-	_ "github.com/joho/godotenv/autoload"
 )
 
 type Server struct {
@@ -42,9 +38,8 @@ type Response struct {
 }
 
 func NewServer(logger *slog.Logger) *http.Server {
-	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	newServer := &Server{
-		port:   port,
+		port:   8080,
 		logger: logger,
 	}
 
@@ -61,11 +56,24 @@ func NewServer(logger *slog.Logger) *http.Server {
 
 func (s *Server) RegisterRoutes() http.Handler {
 	mux := http.NewServeMux()
-
 	mux.HandleFunc("/convert", s.ConvertHandler)
-	mux.Handle("/", http.FileServer(http.Dir("static")))
+	return s.corsMiddleware(mux)
+}
 
-	return mux
+func (s *Server) corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*") // Replace "*" with specific origins if needed
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, X-CSRF-Token")
+		w.Header().Set("Access-Control-Allow-Credentials", "false") // Set to "true" if credentials are required
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func (s *Server) SendRes(w http.ResponseWriter, res Response) {

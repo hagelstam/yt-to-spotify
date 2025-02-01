@@ -1,9 +1,13 @@
 services:
-  app:
+  api:
     build:
-      context: .
+      context: ./api
       dockerfile: Dockerfile
-    env_file:
-      - .env
     ports:
       - 8080:8080
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
