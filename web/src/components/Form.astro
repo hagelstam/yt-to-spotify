@@ -1,0 +1,50 @@
+<div
+  class="flex flex-col gap-4 rounded-xl bg-white/50 p-8 ring-1 shadow-lg ring-black/5 backdrop-blur-lg"
+>
+  <div class="flex flex-col gap-1">
+    <label for="url" class="text-gray-700">YouTube URL</label>
+    <input
+      type="text"
+      id="url"
+      name="url"
+      placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      required
+      class="h-10 w-full rounded-lg border border-gray-300 bg-white px-3 text-gray-700"
+    />
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <label for="artist" class="text-gray-700">Artist name</label>
+    <input
+      type="text"
+      id="artist"
+      name="artist"
+      placeholder="Rick Astley"
+      required
+      class="h-10 w-full rounded-lg border border-gray-300 bg-white px-3 text-gray-700"
+    />
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <label for="title" class="text-gray-700">Song title</label>
+    <input
+      type="text"
+      id="title"
+      name="title"
+      placeholder="Never Gonna Give You Up"
+      required
+      class="h-10 w-full rounded-lg border border-gray-300 bg-white px-3 text-gray-700"
+    />
+  </div>
+
+  <button
+    id="convertBtn"
+    class="mt-4 w-full rounded-full bg-gray-900 py-2 text-white transition ease-in-out hover:bg-gray-800"
+  >
+    Convert
+  </button>
+
+  <p id="status" class="mt-4 text-center text-gray-700"></p>
+</div>
+
+<script src="../scripts/convert.ts"></script>

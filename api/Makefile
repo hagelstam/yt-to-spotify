@@ -7,16 +7,6 @@ run: # Run the application
 test: # Run tests
 	@go test -v ./...
 
-test-coverage: # Run tests with coverage
-	@go test -v -coverprofile=coverage.out ./...
-	@go tool cover -func=coverage.out
-
-docker-run: # Build and run docker container
-	@docker compose up --build
-
-docker-down: # Shutdown docker container
-	@docker compose down
-
 clean: # Clean the binary
 	@rm -rf main
 
