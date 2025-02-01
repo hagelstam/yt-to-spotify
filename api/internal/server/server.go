@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -14,15 +13,6 @@ type Server struct {
 	logger *slog.Logger
 }
 
-type Error struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
-}
-
-func (e *Error) Error() string {
-	return e.Message
-}
-
 type Status string
 
 const (
@@ -32,9 +22,10 @@ const (
 )
 
 type Response struct {
-	Status  Status `json:"status"`
-	Message string `json:"message"`
-	Error   string `json:"error,omitempty"`
+	Status   Status `json:"status"`
+	Message  string `json:"message"`
+	Progress int    `json:"progress,omitempty"`
+	Error    string `json:"error,omitempty"`
 }
 
 func NewServer(logger *slog.Logger) *http.Server {
@@ -76,8 +67,12 @@ func (s *Server) corsMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func (s *Server) SendRes(w http.ResponseWriter, res Response) {
-	data, _ := json.Marshal(res)
+func (s *Server) SendRes(w http.ResponseWriter, status Status, msg string, progress int) {
+	data, _ := json.Marshal(Response{
+		Status:   status,
+		Message:  msg,
+		Progress: progress,
+	})
 
 	_, err := fmt.Fprintf(w, "data: %s\n\n", data)
 	if err != nil {
@@ -89,10 +84,6 @@ func (s *Server) SendRes(w http.ResponseWriter, res Response) {
 	}
 }
 
-func (s *Server) SendErr(w http.ResponseWriter, err error) {
-	var convErr *Error
-	if !errors.As(err, &convErr) {
-		convErr = &Error{Code: "internal_error", Message: err.Error()}
-	}
-	s.SendRes(w, Response{Status: "error", Error: convErr.Message})
+func (s *Server) SendErr(w http.ResponseWriter, msg string) {
+	s.SendRes(w, StatusError, msg, 0)
 }
