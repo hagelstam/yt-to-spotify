@@ -11,7 +11,7 @@ import error from '../assets/error.svg';
       class="flex h-12 flex-row items-center gap-2 rounded-lg bg-green-100 p-4 text-green-800"
     >
       <img height="16px" width="16px" src={success.src} alt="success" />
-      <p class="text-sm font-bold">Successfully converted</p>
+      <p class="text-sm">Successfully converted</p>
     </div>
   </div>
 
@@ -20,7 +20,7 @@ import error from '../assets/error.svg';
       class="flex h-12 flex-row items-center gap-2 rounded-lg bg-red-100 p-4 text-red-800"
     >
       <img height="16px" width="16px" src={error.src} alt="error" />
-      <p id="errorText" class="text-sm font-bold">Error converting</p>
+      <p id="errorText" class="text-sm">Error converting</p>
     </div>
   </div>
 
@@ -62,13 +62,13 @@ import error from '../assets/error.svg';
 
   <button
     id="convertBtn"
-    class="mt-4 w-full rounded-full bg-gray-900 py-2 text-white transition ease-in-out hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-700"
+    class="mt-4 w-full rounded-full bg-gray-900 py-2 font-medium text-white transition ease-in-out hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-700"
   >
     Convert
   </button>
 
   <div class="mt-4 flex flex-col gap-1">
-    <p id="status" class="mb-1 text-base font-medium text-gray-700"></p>
+    <p id="status" class="mb-1 font-medium text-gray-700"></p>
     <div
       id="progressContainer"
       class="relative hidden h-4 w-full rounded-full bg-gray-200"
