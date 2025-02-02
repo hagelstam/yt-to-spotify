@@ -31,7 +31,7 @@ convertBtn.addEventListener('click', () => {
   }
 
   convertBtn.disabled = true;
-  convertBtn.innerText = '...';
+  convertBtn.innerText = '. . .';
   progressContainer.classList.remove('hidden');
 
   const queryParams = new URLSearchParams({ url, title, artist });
