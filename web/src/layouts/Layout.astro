@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import background from '../assets/background.svg';
+import Navbar from '../components/Navbar.astro';
 ---
 
 <!doctype html>
@@ -15,13 +16,14 @@ import background from '../assets/background.svg';
   </head>
   <body class="bg-white">
     <img id="background" src={background.src} alt="" fetchpriority="high" />
-
     <div
       class="fixed inset-0 -z-10 bg-transparent bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"
     >
     </div>
-
-    <slot />
+    <Navbar />
+    <main class="flex min-h-screen flex-col gap-y-12 p-4 pt-32 antialiased">
+      <slot />
+    </main>
   </body>
 </html>
 
