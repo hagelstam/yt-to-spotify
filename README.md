@@ -1,3 +1,3 @@
-# dwnldr
+# Kobalt
 
-Download high-quality, metadata-rich audio files.
+Convert YouTube videos into Spotify compatible local files.

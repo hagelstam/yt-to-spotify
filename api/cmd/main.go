@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/hagelstam/dwnldr/api/internal/server"
+	"github.com/hagelstam/kobalt/api/internal/server"
 )
 
 func gracefulShutdown(server *http.Server, done chan bool, logger *slog.Logger) {
