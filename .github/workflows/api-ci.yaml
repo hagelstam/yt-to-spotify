@@ -13,6 +13,7 @@ defaults:
 
 jobs:
   ci:
+    name: Build, test, and lint backend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,3 +48,4 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.64.4
+          working-directory: ./api
