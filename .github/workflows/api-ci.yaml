@@ -1,4 +1,4 @@
-name: API Continuous Integration
+name: API CI
 on:
   push:
     paths:
@@ -13,7 +13,7 @@ defaults:
 
 jobs:
   ci:
-    name: Build, test, and lint backend
+    name: Build, test, and lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

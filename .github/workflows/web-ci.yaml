@@ -1,4 +1,4 @@
-name: Web Continuous Integration
+name: Web CI
 on:
   push:
     paths:
@@ -14,7 +14,7 @@ defaults:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    name: Build and lint frontend
+    name: Build and lint
     steps:
       - uses: actions/checkout@v4
         with:
