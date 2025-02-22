@@ -14,7 +14,7 @@ defaults:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    name: Build and lint
+    name: Build and lint frontend
     steps:
       - uses: actions/checkout@v4
         with:
