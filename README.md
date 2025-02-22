@@ -10,14 +10,17 @@
   <a href="https://github.com/hagelstam/yt-to-spotify/commits/main">
     <img src="https://img.shields.io/github/last-commit/hagelstam/yt-to-spotify" alt="last commit" />
   </a>
-  <a href="https://github.com/hagelstam/yt-to-spotify/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/hagelstam/yt-to-spotify.svg" alt="license" />
-  </a>
 </div>
 
 ### Screenshot
 
 <img src="./docs/screenshot.png" alt="screenshot" width="800"/>
+
+### About
+
+Tool for downloading YouTube with rich metadata. Makes listening to songs with [Spotify local files](https://support.spotify.com/us/article/local-files/) a better experience, by embedding .mp3 files with artist name, song title and cover art metadata.
+
+<img src="./docs/example.png" alt="example" width="600"/>
 
 ### Getting started
 
@@ -30,12 +33,6 @@ docker compose up
 ```
 
 3. Open `http://localhost:3000` in a browser.
-
-### Purpose
-
-Makes listening to songs from [Spotify local files](https://support.spotify.com/us/article/local-files/) a better experience, by embedding .mp3 files with artist name, song title and cover art metadata.
-
-<img src="./docs/example.png" alt="example" width="600"/>
 
 ### Built with
 
