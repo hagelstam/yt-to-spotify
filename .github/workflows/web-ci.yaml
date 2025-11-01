@@ -2,10 +2,10 @@ name: Web CI
 on:
   push:
     paths:
-      - 'web/**'
+      - "web/**"
   pull_request:
     paths:
-      - 'web/**'
+      - "web/**"
 
 defaults:
   run:
@@ -16,12 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and lint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
 
