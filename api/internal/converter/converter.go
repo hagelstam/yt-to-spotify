@@ -78,7 +78,13 @@ func DownloadAudio(ctx context.Context, url string) error {
 		"--no-keep-video",
 		url,
 	)
-	return cmd.Run()
+
+	cmdOutput, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("%w: %s", err, string(cmdOutput))
+	}
+
+	return nil
 }
 
 func EmbedAudio(ctx context.Context, title, artist string) error {
@@ -138,7 +144,11 @@ func getThumbnailData(url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil && err == nil {
+			err = closeErr
+		}
+	}()
 	return io.ReadAll(resp.Body)
 }
 

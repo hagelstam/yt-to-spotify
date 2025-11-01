@@ -90,7 +90,9 @@ func (s *Server) convertHandler(w http.ResponseWriter, r *http.Request) {
 
 	go func() {
 		<-ctx.Done()
-		os.RemoveAll(workDir)
+		if err := os.RemoveAll(workDir); err != nil {
+			s.logger.Error("failed to cleanup workdir", zap.Error(err))
+		}
 	}()
 
 	ctx = context.WithValue(ctx, converter.WorkDir, workDir)
@@ -144,7 +146,9 @@ func (s *Server) convertHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sendRes(w, StatusCompleted, "done", 100)
-	os.RemoveAll(workDir)
+	if err := os.RemoveAll(workDir); err != nil {
+		s.logger.Error("failed to cleanup workdir", zap.Error(err))
+	}
 
 	s.logger.Info("processed request",
 		zap.String("requestID", requestID),
@@ -159,7 +163,10 @@ func sendRes(w http.ResponseWriter, status Status, msg string, progress int) {
 		Progress: progress,
 	})
 
-	fmt.Fprintf(w, "data: %s\n\n", data)
+	if _, err := fmt.Fprintf(w, "data: %s\n\n", data); err != nil {
+		// Log error but continue as connection may be closed
+		return
+	}
 
 	if f, ok := w.(http.Flusher); ok {
 		f.Flush()
