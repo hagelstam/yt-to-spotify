@@ -12,17 +12,17 @@
   </a>
 </div>
 
-### Screenshot
+## Screenshot
 
 <img src="./docs/screenshot.png" alt="screenshot" width="800"/>
 
-### About
+## About
 
-Tool for downloading YouTube with rich metadata. Makes listening to songs with [Spotify local files](https://support.spotify.com/us/article/local-files/) a better experience, by embedding .mp3 files with artist name, song title and cover art metadata.
+Tool for downloading YouTube videos as audio files with rich metadata. Makes listening to songs with [Spotify local files](https://support.spotify.com/us/article/local-files/) a better experience, by embedding .mp3 files with artist name, song title and cover art metadata.
 
 <img src="./docs/example.png" alt="example" width="600"/>
 
-### Getting started
+## Getting started
 
 1. Make sure you have [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) installed.
 
@@ -34,7 +34,7 @@ docker compose up
 
 3. Open `http://localhost:3000` in a browser.
 
-### Built with
+## Built with
 
 - [Go](https://go.dev/)
 - [ffmpeg](https://www.ffmpeg.org/)
@@ -43,6 +43,6 @@ docker compose up
 - [TailwindCSS](https://tailwindcss.com/)
 - [Docker](https://www.docker.com/)
 
-### License
+## License
 
 This project is licensed under the terms of the [MIT](https://choosealicense.com/licenses/mit/) license.
